@@ -28,6 +28,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.supsim.redditexplorer.ItemListActivity" />
         </activity>
+        <activity
+            android:name=".StatsActivity"
+            android:label="@string/title_activity_stats"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
