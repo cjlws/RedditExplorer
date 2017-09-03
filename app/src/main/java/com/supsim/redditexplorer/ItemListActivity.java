@@ -1,15 +1,23 @@
 package com.supsim.redditexplorer;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.ContentObserver;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.supsim.redditexplorer.account.AccountGeneral;
 import com.supsim.redditexplorer.dummy.DummyContent;
 
 import java.util.List;
@@ -33,16 +42,34 @@ import java.util.List;
  */
 public class ItemListActivity extends AppCompatActivity {
 
+    private static final String TAG = "ItemsListActivity";
+
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
     private boolean mTwoPane;
 
+//    public static final String AUTHORITY = "com.supsim.redditexplorer.provider";
+//    public static final String ACCOUNT_TYPE = "supsim.com";
+//    public static final String ACCOUNT = "testaccount";
+//    Account mAccount;
+
+//    public static final long SYNC_INTERVAL = 5 * 60; // Minutes * Seconds
+//    ContentResolver mResolver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "OnCreate Ran");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
+
+//        mAccount = CreateSyncAccount(this);
+//        mResolver = getContentResolver();
+
+//        ContentResolver.addPeriodicSync(mAccount, AUTHORITY, Bundle.EMPTY, SYNC_INTERVAL);
+//
+//        ContentResolver.requestSync(mAccount, AUTHORITY, Bundle.EMPTY);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -68,7 +95,26 @@ public class ItemListActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+
+        //TODO Put in some control here so this doesn't fire every time the page is reloaded
+        AccountGeneral.createSyncAccount(this);
+        SyncAdapter.performSync();
+
     }
+
+//    public static Account CreateSyncAccount(Context context){
+//
+//        Account newAccount = new Account(ACCOUNT, ACCOUNT_TYPE);
+//        AccountManager accountManager = (AccountManager)context.getSystemService(ACCOUNT_SERVICE);
+//        if(accountManager.addAccountExplicitly(newAccount, null, null)){
+//            Log.d(TAG, "Add account Explicitly Ran");
+//
+//        } else {
+//            Log.d(TAG, "Error adding account");
+//
+//        }
+//        return newAccount;
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -159,6 +205,21 @@ public class ItemListActivity extends AppCompatActivity {
             public String toString() {
                 return super.toString() + " '" + mContentView.getText() + "'";
             }
+        }
+    }
+
+    private void refreshArticles(){
+        Log.d(TAG, "Call to Refresh Articles");
+    }
+
+    private final class RedditArticleObserver extends ContentObserver {
+        private RedditArticleObserver() {
+            super(new Handler(Looper.getMainLooper()));
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri){
+            refreshArticles();
         }
     }
 }
