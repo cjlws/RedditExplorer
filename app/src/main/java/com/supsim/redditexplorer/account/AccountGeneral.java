@@ -30,7 +30,7 @@ public class AccountGeneral {
 
         if(manager.addAccountExplicitly(account, null, null)){
             final String AUTHORITY = RedditArticleContract.CONTENT_AUTHORITY;
-            final long SYNC_FREQUENCY = 5 * 60;
+            final long SYNC_FREQUENCY = 5 * 60;  //TODO make this something sensible for release and/or make it user selectable
 
             ContentResolver.setIsSyncable(account, AUTHORITY, 1);
             ContentResolver.setSyncAutomatically(account, AUTHORITY, true);

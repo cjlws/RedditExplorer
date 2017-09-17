@@ -5,17 +5,12 @@ import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.supsim.redditexplorer.Network.MySingleton;
 import com.supsim.redditexplorer.account.AccountGeneral;
 import com.supsim.redditexplorer.data.RedditArticle;
 import com.supsim.redditexplorer.data.RedditArticleContract;
@@ -28,25 +23,25 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Vector;
 
 import javax.net.ssl.HttpsURLConnection;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private static final String TAG = "SyncAdapter";
-    ContentResolver mContentResolver;
+    private ContentResolver mContentResolver;
     private static final String url = "https://www.reddit.com/.json";
 
     public SyncAdapter(Context context, boolean autoInitialize){
         super(context, autoInitialize);
-        mContentResolver = context.getContentResolver();
+        this.mContentResolver = context.getContentResolver();
     }
 
     public SyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
         super(context, autoInitialize, allowParallelSyncs);
-        mContentResolver = context.getContentResolver();
+        this.mContentResolver = context.getContentResolver();
     }
 
     @Override
@@ -54,6 +49,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                               ContentProviderClient providerClient, SyncResult syncResult){
         Log.d(TAG, "On Perform Sync Ran");
 
+        //TODO Move parsing out to own class
         try {
             String jsonFeed = download(url);
 
@@ -61,23 +57,54 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             JSONObject dataObject = jsonObject.getJSONObject("data");
             JSONArray children = dataObject.getJSONArray("children");
 
+            Vector<ContentValues> allVector = new Vector<ContentValues>(children.length());
+
             for(int i = 0; i < children.length(); i++){
                 JSONObject child = children.getJSONObject(i);
                 JSONObject article = child.getJSONObject("data");
 
-                String domain = article.getString("domain");
-                String subreddit = article.getString("subreddit");
-                String id = article.getString("id");
-                String title = article.getString("title");
-                String score = article.getString("score");
-                boolean nsfw = article.getBoolean("over_18");
-                int num_comments = article.getInt("num_comments");
-                long created = article.getLong("created_utc");
-                String author = article.getString("author");
-                //TODO More to add such as thumbnail links plus the actual link!
+                String domain = article.getString("domain");            // The domain the link points to
+                String subreddit = article.getString("subreddit");      // The name of the subreddit it has been posted under
+                String id = article.getString("id");                    // The unique reddit ID
+                String title = article.getString("title");              // The title of the post
+                String score = article.getString("score");              // Total score for the post
+                int nsfw = convertNSFW(article.getBoolean("over_18"));  // NSFW or not - converted to int to make storage easier
+                int num_comments = article.getInt("num_comments");      // Number of comments available
+                long created = article.getLong("created_utc");          // Timestamp of the creation of the post
+                String author = article.getString("author");            // reddit username of the author
+                String thumbnail = article.getString("thumbnail");      // scaled thumbnail to accompany the link.  There are also _height and _width fields available
+                String permalink = article.getString("permalink");      // link to the reddit article page - relative link
 
-                RedditArticle redditArticle = new RedditArticle(domain, subreddit, id, title, "", "", score, nsfw, num_comments, created, author);
-                Log.d(TAG, i + redditArticle.toString());
+                RedditArticle redditArticle = new RedditArticle(
+                        domain,
+                        subreddit,
+                        id,
+                        title,
+                        score,
+                        nsfw,
+                        num_comments,
+                        created,
+                        author,
+                        thumbnail,
+                        permalink);
+                Log.d(TAG, i + " " + redditArticle.toString());
+
+                ContentValues redditValues = new ContentValues();
+                redditValues.put(RedditArticleContract.Articles.COL_SUBREDDIT, subreddit);
+                redditValues.put(RedditArticleContract.Articles.COL_TITLE, title);
+                redditValues.put(RedditArticleContract.Articles.COL_AUTHOR, author);
+
+                allVector.add(redditValues);
+            }
+
+            Log.d(TAG, "Vector Size: " + allVector.size());
+
+            if(allVector.size() > 0){
+                ContentValues[] contentValuesArray = new ContentValues[allVector.size()];
+                allVector.toArray(contentValuesArray);
+                mContentResolver.delete(RedditArticleContract.Articles.CONTENT_URI, null, null);
+                mContentResolver.bulkInsert(RedditArticleContract.Articles.CONTENT_URI, contentValuesArray);
+                mContentResolver.notifyChange(RedditArticleContract.Articles.CONTENT_URI, null, false);
             }
             
         } catch (IOException e){
@@ -89,6 +116,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
+    private int convertNSFW(boolean nsfw){
+        if(nsfw){
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 
     private String download(String address) throws IOException {
         HttpsURLConnection connection = null;
