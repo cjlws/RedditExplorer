@@ -93,6 +93,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 redditValues.put(RedditArticleContract.Articles.COL_SUBREDDIT, subreddit);
                 redditValues.put(RedditArticleContract.Articles.COL_TITLE, title);
                 redditValues.put(RedditArticleContract.Articles.COL_AUTHOR, author);
+                redditValues.put(RedditArticleContract.Articles.COL_PERMALINK, permalink);
 
                 allVector.add(redditValues);
             }

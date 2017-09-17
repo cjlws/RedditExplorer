@@ -7,7 +7,7 @@ public class RedditArticle {
     private String id;
     private String title;
     private String score;
-    private int nsfw;  // Use int so it plays nicer with databse than boolean
+    private int nsfw;  // Use int so it plays nicer with database than boolean
     private int num_comments;
     private long created;
     private String author;
@@ -46,21 +46,21 @@ public class RedditArticle {
     public String toString(){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Domain: ").append(this.domain);
-        stringBuilder.append(", Subreddit: ").append(subreddit);
-        stringBuilder.append(", ID: ").append(id);
-        stringBuilder.append(", Title: ").append(title);
-        stringBuilder.append(", Score: ").append(score);
+        stringBuilder.append(", Subreddit: ").append(this.subreddit);
+        stringBuilder.append(", ID: ").append(this.id);
+        stringBuilder.append(", Title: ").append(this.title);
+        stringBuilder.append(", Score: ").append(this.score);
         stringBuilder.append(", NSFW: ");
         if(postIsSafeForWork()) {
             stringBuilder.append("Safe");
         } else {
             stringBuilder.append("Not Safe");
         }
-        stringBuilder.append(", Comments: ").append(num_comments);
-        stringBuilder.append(", Created: ").append(created);
-        stringBuilder.append(", Author: ").append(author);
-        stringBuilder.append(", Thumbnail: ").append(post_thumbnail);
-        stringBuilder.append(", Link: ").append(permalink);
+        stringBuilder.append(", Comments: ").append(this.num_comments);
+        stringBuilder.append(", Created: ").append(this.created);
+        stringBuilder.append(", Author: ").append(this.author);
+        stringBuilder.append(", Thumbnail: ").append(this.post_thumbnail);
+        stringBuilder.append(", Link: ").append(this.permalink);
 
         return stringBuilder.toString();
     }

@@ -7,9 +7,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import static com.supsim.redditexplorer.data.RedditArticleContract.DB_NAME;
 import static com.supsim.redditexplorer.data.RedditArticleContract.DB_VERSION;
 
-/**
- * Created by johnrobinson on 10/09/2017.
- */
 
 public class DatabaseClient extends SQLiteOpenHelper {
 
@@ -49,7 +46,7 @@ public class DatabaseClient extends SQLiteOpenHelper {
 
     private void createArticlesTable(SQLiteDatabase database){
         database.execSQL("CREATE TABLE [" + RedditArticleContract.Articles.NAME + "] ([" +
-                RedditArticleContract.Articles.COL_ID + "] TEXT UNIQUE PRIMARY KEY, [" +  //TODO Add autoincrement
+                RedditArticleContract.Articles.COL_ID + "] TEXT UNIQUE PRIMARY KEY, [" +
                 RedditArticleContract.Articles.COL_DOMAIN + "] TEXT, [" +
                 RedditArticleContract.Articles.COL_SUBREDDIT + "] TEXT, [" +
                 RedditArticleContract.Articles.COL_TITLE + "] TEXT, [" +

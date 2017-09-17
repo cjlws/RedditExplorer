@@ -1,56 +1,95 @@
 package com.supsim.redditexplorer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-/**
- * Created by johnrobinson on 11/09/2017.
- */
+import static com.supsim.redditexplorer.ItemDetailFragment.interprocessLink;
+import static com.supsim.redditexplorer.ItemDetailFragment.interprocessSubreddit;
+import static com.supsim.redditexplorer.ItemDetailFragment.interprocessTitle;
+
 
 public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditAdapterViewHolder> {
 
 
     private Cursor mCursor;
-    final private Context mContext;
-    final private RedditAdapterOnClickHandler mClickHandler;
-    final private View mEmptyView;
-    //TODO Might not need itemchoice
+    private boolean mTwoPane;
+    private static final String TAG = "RedditAdapter";
+    private Context mContext;
+    private FragmentManager fragmentManager;
+
 
     public class RedditAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final TextView subredditTextView;
+
+        String test = ItemDetailFragment.ARG_ITEM_ID;
+
+    public final TextView subredditTextView;
         public final TextView titleTextView;
         public final TextView authorTextView;
 
-        public RedditAdapterViewHolder(View view){
+        public RedditAdapterViewHolder(final View view){
             super(view);
-            subredditTextView = (TextView)view.findViewById(R.id.subreddittextview);
-            titleTextView = (TextView)view.findViewById(R.id.titletextview);
-            authorTextView = (TextView)view.findViewById(R.id.authortextview);
+            this.subredditTextView = (TextView)view.findViewById(R.id.subreddittextview);
+            this.titleTextView = (TextView)view.findViewById(R.id.titletextview);
+            this.authorTextView = (TextView)view.findViewById(R.id.authortextview);
             view.setOnClickListener(this);
         }
 
         @Override
-        public void onClick(View view){
+        public void onClick(View v){
 
+            int position = getAdapterPosition();
+            if(position != RecyclerView.NO_POSITION){
+                Log.d(TAG, "Positon: " + position);
+                if (mCursor != null){
+                    mCursor.moveToPosition(position);
+                    String link = mCursor.getString(ItemListActivity.COL_PERMALINK);
+                    if (link != null){
+                        if(mTwoPane){
+                            Bundle arguments = new Bundle();
+                            arguments.putString(ItemDetailFragment.interprocessTitle, mCursor.getString(ItemListActivity.COL_TITLE));
+                            arguments.putString(ItemDetailFragment.interprocessSubreddit, mCursor.getString(ItemListActivity.COL_SUBREDDIT));
+                            arguments.putString(ItemDetailFragment.interprocessLink, mCursor.getString(ItemListActivity.COL_PERMALINK));
+                            ItemDetailFragment fragment = new ItemDetailFragment();
+                            fragment.setArguments(arguments);
+                            try {
+                                if(fragmentManager != null){
+                                    fragmentManager.beginTransaction().replace(R.id.item_detail_container, fragment).commit();
+                                }
+                            } catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        } else {
+                            Intent intent = new Intent(itemView.getContext(), ItemDetailActivity.class);
+                            intent.putExtra(interprocessTitle, mCursor.getString(ItemListActivity.COL_TITLE));
+                            intent.putExtra(interprocessSubreddit, mCursor.getString(ItemListActivity.COL_SUBREDDIT));
+                            intent.putExtra(interprocessLink, link);
+                            itemView.getContext().startActivity(intent);
+                        }
+                    } else {
+                        Log.d(TAG, "Link was null");
+                    }
+                } else {
+                    Log.d(TAG, "Cursor = null");
+                }
+            }
         }
     }
 
-    public static interface RedditAdapterOnClickHandler {
-        //TODO not sure if this is needed
-        void onClick(Long date, RedditAdapterViewHolder viewHolder);
-    }
 
-    public RedditAdapter(Context context, RedditAdapterOnClickHandler onClickHandler, View emptyView, int choiceMode){
-        //TODO Look at refactoring these names
-        mContext = context;
-        mClickHandler = onClickHandler;
-        mEmptyView = emptyView;
 
+    public RedditAdapter(FragmentManager manager, Cursor cursor, boolean twoPane){
+        mCursor = cursor;
+        mTwoPane = twoPane;
+        this.fragmentManager = manager;
     }
 
     @Override
@@ -68,7 +107,6 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditAdap
     public void onBindViewHolder(RedditAdapterViewHolder redditAdapterViewHolder, int position){
         mCursor.moveToPosition(position);
 
-
         int redditId = mCursor.getInt(ItemListActivity.COL_ID);
         String redditSubreddit = mCursor.getString(ItemListActivity.COL_SUBREDDIT);
         String redditTitle = mCursor.getString(ItemListActivity.COL_TITLE);
@@ -77,6 +115,13 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditAdap
         redditAdapterViewHolder.subredditTextView.setText(redditSubreddit);
         redditAdapterViewHolder.titleTextView.setText(redditId + " " + redditTitle);
         redditAdapterViewHolder.authorTextView.setText(redditAuthor);
+
+
+        try{
+            Log.d(TAG, "DATA: " + mCursor.getString(ItemListActivity.COL_PERMALINK));
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -93,6 +138,6 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditAdap
     public void swapCursor(Cursor newCursor){
         mCursor = newCursor;
         notifyDataSetChanged();
-        mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
+//        mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 }

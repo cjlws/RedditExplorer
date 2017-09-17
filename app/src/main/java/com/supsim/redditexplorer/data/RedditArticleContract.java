@@ -9,7 +9,7 @@ public class RedditArticleContract {
     public static final String PATH_ARTICLES = "articles";
 
     static final String DB_NAME = "articles_db";
-    static final int DB_VERSION = 1;
+    static final int DB_VERSION = 2;
 
     public static abstract class Articles {
         public static final String NAME = "articles";

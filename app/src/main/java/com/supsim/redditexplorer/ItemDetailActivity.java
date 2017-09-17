@@ -59,6 +59,12 @@ public class ItemDetailActivity extends AppCompatActivity {
             Bundle arguments = new Bundle();
             arguments.putString(ItemDetailFragment.ARG_ITEM_ID,
                     getIntent().getStringExtra(ItemDetailFragment.ARG_ITEM_ID));
+            arguments.putString(ItemDetailFragment.interprocessLink,
+                    getIntent().getStringExtra(ItemDetailFragment.interprocessLink));
+            arguments.putString(ItemDetailFragment.interprocessTitle,
+                    getIntent().getStringExtra(ItemDetailFragment.interprocessTitle));
+            arguments.putString(ItemDetailFragment.interprocessSubreddit,
+                    getIntent().getStringExtra(ItemDetailFragment.interprocessSubreddit));
             ItemDetailFragment fragment = new ItemDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
