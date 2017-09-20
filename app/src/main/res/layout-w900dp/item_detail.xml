@@ -13,8 +13,15 @@
         android:layout_height="wrap_content"
         android:text="loading"
         />
-    <ListView
+    <TextView
         android:layout_below="@id/temp_textview"
+        android:id="@+id/tabletty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="This is the tablet version"
+        android:textStyle="bold"/>
+    <ListView
+        android:layout_below="@id/tabletty"
         android:id="@+id/comment_holder_listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,5 +29,5 @@
     </ListView>
 </RelativeLayout>
 
-<!--This layout appears embedded in the detail layout.  SO on a phone it is beneath the title and on a tablet it is on its own-->
-<!--Going to need two quite seperate ones methinks-->
+    <!--This layout appears embedded in the detail layout.  SO on a phone it is beneath the title and on a tablet it is on its own-->
+    <!--Going to need two quite seperate ones methinks-->
