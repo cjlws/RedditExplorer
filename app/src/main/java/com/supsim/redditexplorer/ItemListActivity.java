@@ -9,9 +9,12 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +22,7 @@ import android.view.View;
 
 import com.supsim.redditexplorer.account.AccountGeneral;
 import com.supsim.redditexplorer.data.RedditArticleContract;
+import com.supsim.redditexplorer.data.StatsRecordContract;
 
 /**
  * An activity representing a list of Items. This activity
@@ -28,7 +32,7 @@ import com.supsim.redditexplorer.data.RedditArticleContract;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class ItemListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ItemListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, RedditItemTouchHelper.RedditItemTouchHelperListener {
 
     private static final String TAG = "ItemsListActivity";
     private RecyclerView mRecyclerView;
@@ -83,12 +87,35 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         View emptyView = new View(this);
         mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
+//        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RedditItemTouchHelper(0, ItemTouchHelper.LEFT, this) {
+//            @Override
+//            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+//
+//                Log.d(TAG, "View was swiped " + direction);
+//            }
+//        };
+
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RedditItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mRecyclerView);
 
         Cursor cursor = getContentResolver().query(RedditArticleContract.Articles.CONTENT_URI, null, null, null, null, null);
 
         mRedditAdapter = new RedditAdapter(getSupportFragmentManager(), cursor, mTwoPane);
         mRecyclerView.setAdapter(mRedditAdapter);
 
+
+        Cursor statsCursor = getContentResolver().query(StatsRecordContract.Stats.CONTENT_URI, null, null, null, null, null);
+        if (statsCursor != null){
+            Log.d("STATS", "There are " + statsCursor.getCount() + " stats records");
+        }
 
 
         //TODO Put in some control here so this doesn't fire every time the page is reloaded
@@ -102,7 +129,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
             Log.d(TAG, "Total Records: " + totalRecords);
         }
 
-        if(totalRecords < 1){
+        if(totalRecords < 10){
             SyncAdapter.performSync();
         }
 
@@ -111,6 +138,26 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
 //        }
 
         getLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position){
+        if(viewHolder instanceof RedditAdapter.RedditAdapterViewHolder){
+//            mRedditAdapter.removeItem(viewHolder.getAdapterPosition());
+//            mRedditAdapter.notifyDataSetChanged();
+            //TODO Lots more to do here!
+
+            Log.d(TAG, "POSITION: " + position);
+            Log.d(TAG, "ADAP POSITION: " + viewHolder.getAdapterPosition() );
+
+            String idToDelete = mRedditAdapter.getItemID(viewHolder.getAdapterPosition());
+
+            Log.d(TAG, "Attempting to delete article with id " + idToDelete);
+            int deleted = getContentResolver().delete(RedditArticleContract.Articles.CONTENT_URI,
+                    RedditArticleContract.Articles.COL_ID + " = ?", new String[]{idToDelete});
+
+            Log.d(TAG, deleted + " rows deleted");
+        }
     }
 
     @Override

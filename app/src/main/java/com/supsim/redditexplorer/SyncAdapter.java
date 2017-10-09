@@ -63,6 +63,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 JSONObject child = children.getJSONObject(i);
                 JSONObject article = child.getJSONObject("data");
 
+                //TODO change to opt with defaults
+
                 String domain = article.getString("domain");            // The domain the link points to
                 String subreddit = article.getString("subreddit");      // The name of the subreddit it has been posted under
                 String id = article.getString("id");                    // The unique reddit ID
@@ -72,7 +74,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 int num_comments = article.getInt("num_comments");      // Number of comments available
                 long created = article.getLong("created_utc");          // Timestamp of the creation of the post
                 String author = article.getString("author");            // reddit username of the author
-                String thumbnail = article.getString("thumbnail");      // scaled thumbnail to accompany the link.  There are also _height and _width fields available
+                String thumbnail = article.optString("thumbnail", "");      // scaled thumbnail to accompany the link.  There are also _height and _width fields available
                 String permalink = article.getString("permalink");      // link to the reddit article page - relative link
 
                 RedditArticle redditArticle = new RedditArticle(
@@ -90,15 +92,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 Log.d(TAG, i + " " + redditArticle.toString());
 
                 ContentValues redditValues = new ContentValues();
+                redditValues.put(RedditArticleContract.Articles.COL_ID, id);
                 redditValues.put(RedditArticleContract.Articles.COL_SUBREDDIT, subreddit);
                 redditValues.put(RedditArticleContract.Articles.COL_TITLE, title);
                 redditValues.put(RedditArticleContract.Articles.COL_AUTHOR, author);
                 redditValues.put(RedditArticleContract.Articles.COL_PERMALINK, permalink);
+                redditValues.put(RedditArticleContract.Articles.COL_THUMBNAIL, thumbnail);
 
                 allVector.add(redditValues);
+
+//                Log.d("TEST", allVector.toString());
             }
 
-            Log.d(TAG, "Vector Size: " + allVector.size());
+//            Log.d(TAG, "Vector Size: " + allVector.size());
 
             if(allVector.size() > 0){
                 ContentValues[] contentValuesArray = new ContentValues[allVector.size()];

@@ -56,6 +56,12 @@
             android:exported="false"
             android:syncable="true" />
 
+        <provider
+            android:authorities="com.supsim.redditexplorer.statsync"
+            android:name=".data.StatsProvider"
+            android:exported="false"
+            />
+
         <service
             android:name=".SyncService"
             android:exported="true">

@@ -34,6 +34,10 @@ public class TopLevelComment {
         return this.replies;
     }
 
+    public String getNumberOfSecondLevelComments(){
+        return "There are " + this.replies.size() + " replies to " + this.comment;
+    }
+
     public int getType(){
         return this.type;
     }

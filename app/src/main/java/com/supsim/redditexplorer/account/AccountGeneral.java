@@ -9,9 +9,6 @@ import android.os.Bundle;
 import com.supsim.redditexplorer.SyncAdapter;
 import com.supsim.redditexplorer.data.RedditArticleContract;
 
-/**
- * Created by johnrobinson on 03/09/2017.
- */
 
 public class AccountGeneral {
 

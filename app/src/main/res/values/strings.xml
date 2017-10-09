@@ -3,4 +3,7 @@
     <string name="title_item_list">Items</string>
     <string name="title_item_detail">Item Detail</string>
     <string name="title_activity_stats">StatsActivity</string>
+
+    <string name="post_author_and_time_format">Posted %1$s ago by %2$s</string>
+    <string name="post_subreddit_format">r/%1$s</string>
 </resources>

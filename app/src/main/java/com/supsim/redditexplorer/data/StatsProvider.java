@@ -1,4 +1,4 @@
-package com.supsim.redditexplorer;
+package com.supsim.redditexplorer.data;
 
 
 import android.content.ContentProvider;
@@ -10,49 +10,47 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
-import com.supsim.redditexplorer.data.DatabaseClient;
-import com.supsim.redditexplorer.data.RedditArticle;
-import com.supsim.redditexplorer.data.RedditArticleContract;
+import java.util.ArrayList;
 
-public class RProvider extends ContentProvider {
+public class StatsProvider extends ContentProvider {
 
-    private static final int ARTICLE = 1;
-    private static final int ARTICLE_ID = 2;
+    private static final int STAT = 1;
+    private static final int STAT_ID = 2;
 
     private static final UriMatcher uriMatcher;
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(RedditArticleContract.CONTENT_AUTHORITY, RedditArticleContract.PATH_ARTICLES, ARTICLE);
-        uriMatcher.addURI(RedditArticleContract.CONTENT_AUTHORITY, RedditArticleContract.PATH_ARTICLES + "/#", ARTICLE_ID);
+        uriMatcher.addURI(StatsRecordContract.CONTENT_AUTHORITY, StatsRecordContract.PATH_STATS, STAT);
+        uriMatcher.addURI(StatsRecordContract.CONTENT_AUTHORITY, StatsRecordContract.PATH_STATS + "/#", STAT_ID);
     }
 
     private SQLiteDatabase database;
 
     @Override
     public boolean onCreate(){
-        this.database = DatabaseClient.getInstance(getContext()).getDatabase();
+        this.database = StatsDatabaseClient.getInstance(getContext()).getDatabase();
         return true;
     }
 
     @Override
     public String getType(Uri uri){
         switch (uriMatcher.match(uri)){
-            case ARTICLE:
-                return RedditArticleContract.Articles.CONTENT_TYPE;
-            case ARTICLE_ID:
-                return RedditArticleContract.Articles.CONTENT_ITEM_TYPE;
+            case STAT:
+                return StatsRecordContract.Stats.CONTENT_TYPE;
+            case STAT_ID:
+                return StatsRecordContract.Stats.CONTENT_ITEM_TYPE;
             default:
-                throw new IllegalArgumentException("URI was invalid");
+                throw new IllegalArgumentException("Uri was invalid");
         }
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection,
-                        String[] selectionArgs, String sortOrder) {
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder){
+
         Cursor cursor;
         switch (uriMatcher.match(uri)){
-            case ARTICLE:
-                cursor = database.query(RedditArticleContract.Articles.NAME,
+            case STAT:
+                cursor = database.query(StatsRecordContract.Stats.NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -60,79 +58,78 @@ public class RProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
-            case ARTICLE_ID:
+            case STAT_ID:
                 long _id = ContentUris.parseId(uri);
-                cursor = database.query(RedditArticleContract.Articles.NAME,
+                cursor = database.query(StatsRecordContract.Stats.NAME,
                         projection,
-                        RedditArticleContract.Articles.COL_ID + "=?",
+                        StatsRecordContract.Stats.COL_STAT_ID + "=?",
                         new String[] {String.valueOf(_id)},
                         null,
                         null,
                         sortOrder);
                 break;
             default:
-                throw new IllegalArgumentException("URI was invalid");
+                throw new IllegalArgumentException("Uri was invalid");
         }
 
         assert getContext() != null;
-        cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
+//        return null;
     }
 
     @Override
     public Uri insert(Uri uri, ContentValues values){
-//        Log.d("INSERT", "Request to insert " + values.toString());
+
         Uri returnUri;
         long _id;
 
         switch (uriMatcher.match(uri)){
-            case ARTICLE:
-                _id = database.insert(RedditArticleContract.Articles.NAME, null, values);
-                returnUri = ContentUris.withAppendedId(RedditArticleContract.Articles.CONTENT_URI, _id);
+            case STAT:
+                _id = database.insert(StatsRecordContract.Stats.NAME, null, values);
+                returnUri = ContentUris.withAppendedId(StatsRecordContract.Stats.CONTENT_URI, _id);
                 break;
             default:
                 throw new IllegalArgumentException("URI was invalid");
         }
 
         assert getContext() != null;
-        getContext().getContentResolver().notifyChange(uri, null);
+
         return returnUri;
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs){
-        Log.d("CONTENT_DELETE", "Request to delete " + selection);
+
         int rows;
         switch (uriMatcher.match(uri)){
-            case ARTICLE:
-                rows = database.delete(RedditArticleContract.Articles.NAME, selection, selectionArgs);
+            case STAT:
+                rows = database.delete(StatsRecordContract.Stats.NAME, selection, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("URI was invalid");
         }
-        if (rows != 0){
+        if (rows !=0){
             assert getContext() != null;
-            getContext().getContentResolver().notifyChange(uri, null);
         }
         return rows;
     }
-
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs){
+
         int rows;
         switch (uriMatcher.match(uri)){
-            case ARTICLE:
-                rows = database.update(RedditArticleContract.Articles.NAME, values, selection, selectionArgs);
+            case STAT:
+                rows = database.update(StatsRecordContract.Stats.NAME, values, selection, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("URI was invalid");
-
         }
-        if (rows != 0){
+        if (rows !=0){
             assert getContext() != null;
-            getContext().getContentResolver().notifyChange(uri, null);
         }
         return rows;
     }
+
+
 }

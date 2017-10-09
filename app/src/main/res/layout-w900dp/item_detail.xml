@@ -4,24 +4,81 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     tools:context="com.supsim.redditexplorer.ItemDetailFragment"
     >
+    <LinearLayout
+        android:padding="8dp"
+        android:orientation="vertical"
+        android:id="@+id/postHolderLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#eee"
+        >
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/postSubredditTextView"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                tools:text="r/Videos"/>
+
+            <TextView
+                tools:text="youtube.com"
+                android:id="@+id/postDestinationDomainTextView"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+            <TextView
+                tools:text="Posted 8hrs ago by TheBlogger"
+                android:id="@+id/postAuthorAndTimeStampTextView"
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/postScoreTextView"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                tools:text="16.7k"
+                android:textSize="24sp"/>
+            <com.android.volley.toolbox.NetworkImageView
+                android:layout_weight="1"
+                android:id="@+id/postThumbnailImageView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/postMainLinkTextView"
+                tools:text="Main URL link"
+                android:layout_weight="6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
     <TextView
         android:id="@+id/temp_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="loading"
+        tools:text="Top 10 of 200 comments"
+        android:layout_below="@id/postHolderLinearLayout"
         />
-    <TextView
-        android:layout_below="@id/temp_textview"
-        android:id="@+id/tabletty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="This is the tablet version"
-        android:textStyle="bold"/>
     <ListView
-        android:layout_below="@id/tabletty"
+        android:layout_below="@id/temp_textview"
         android:id="@+id/comment_holder_listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

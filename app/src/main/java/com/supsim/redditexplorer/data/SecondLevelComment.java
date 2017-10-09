@@ -1,13 +1,9 @@
 package com.supsim.redditexplorer.data;
 
-/**
- * Created by johnrobinson on 20/09/2017.
- */
-
 public class SecondLevelComment {
 
-    String author;
-    String comment;
+    private String author;
+    private String comment;
 
     public SecondLevelComment(){
        //Empty Constructor

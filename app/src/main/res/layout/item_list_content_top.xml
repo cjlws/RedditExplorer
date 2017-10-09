@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ItemListActivity">
+
+    <TextView
+        android:id="@+id/subreddittextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        android:textAlignment="viewStart"
+        tools:text="Sub"
+        tools:layout_editor_absoluteX="0dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"/>
+    <TextView
+        android:paddingStart="3dp"
+        android:paddingEnd="8dp"
+        app:layout_constraintStart_toEndOf="@id/subreddittextview"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="domain"
+        android:id="@+id/item_list_top_domain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/listViewThumbnail"
+        app:layout_constraintTop_toBottomOf="@id/subreddittextview"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        tools:layout_width="100dp"
+        tools:layout_height="100dp"
+        android:maxHeight="100dp"
+        android:padding="8dp"/>
+
+
+    <TextView
+        android:id="@+id/titletextview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/subreddittextview"
+        app:layout_constraintBottom_toTopOf="@id/authortextview"
+        app:layout_constraintStart_toEndOf="@id/listViewThumbnail"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:minLines="1"
+        android:maxLines="4"
+        android:ellipsize="end"
+        tools:text="The quick brown fox jumps over the lazy dog"
+        android:textStyle="bold"
+        android:minHeight="100dp"
+         />
+
+
+        <TextView
+            android:id="@+id/authortextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titletextview"
+            tools:text="Posted 5hr ago by Author"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            tools:layout_editor_absoluteX="0dp"
+             />
+
+    <TextView
+        tools:text="32 comments"
+        android:id="@+id/list_content_top_comments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titletextview"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+         />
+
+
+
+    <TextView
+        tools:text="Score"
+        android:id="@+id/list_content_top_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/authortextview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"/>
+
+
+
+</android.support.constraint.ConstraintLayout>
