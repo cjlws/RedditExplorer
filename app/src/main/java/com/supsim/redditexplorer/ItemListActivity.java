@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.supsim.redditexplorer.account.AccountGeneral;
 import com.supsim.redditexplorer.data.RedditArticleContract;
 import com.supsim.redditexplorer.data.StatsRecordContract;
@@ -56,11 +57,16 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
      */
     private boolean mTwoPane;
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "OnCreate Ran");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
