@@ -77,6 +77,9 @@ public class ItemDetailFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        Log.d("IDF", "onCreate");
+
         super.onCreate(savedInstanceState);
 
         if (getArguments().containsKey(interprocessLink)) {

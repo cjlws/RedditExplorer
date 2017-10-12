@@ -4,10 +4,14 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.database.MergeCursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -35,6 +39,10 @@ import com.supsim.redditexplorer.data.StatsRecordContract;
  */
 public class ItemListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, RedditItemTouchHelper.RedditItemTouchHelperListener {
 
+    //TODO Enhance Stats Database.  Need to make it so that a. articles are only recorded once and b. if they have been dismissed then don't show them again
+
+
+
     private static final String TAG = "ItemsListActivity";
     private RecyclerView mRecyclerView;
     private RedditAdapter mRedditAdapter;
@@ -57,15 +65,28 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
      */
     private boolean mTwoPane;
 
+    boolean showPhoneTutorial;
+
     private FirebaseAnalytics mFirebaseAnalytics;
+
+    public static final String PREFS_NAME = "REPrefs";
+    public static final String PHONE_TUTORIAL_PREF_LABEL = "phoneTutorial";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "OnCreate Ran");
         super.onCreate(savedInstanceState);
+
+
+        //TODO Move to better place
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, 0);
+        showPhoneTutorial = sharedPreferences.getBoolean(PHONE_TUTORIAL_PREF_LABEL, true);
+
+
         setContentView(R.layout.activity_item_list);
 
-        // Obtain the FirebaseAnalytics instance.
+        // Obtain the Firebase Analytics instance
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -89,6 +110,8 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
             mTwoPane = true;
         }
 
+        if(mTwoPane) showPhoneTutorial = false;
+
         mRecyclerView = (RecyclerView)findViewById(R.id.item_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         View emptyView = new View(this);
@@ -96,26 +119,32 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
-//        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RedditItemTouchHelper(0, ItemTouchHelper.LEFT, this) {
-//            @Override
-//            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-//                return false;
-//            }
-//
-//            @Override
-//            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-//
-//                Log.d(TAG, "View was swiped " + direction);
-//            }
-//        };
-
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RedditItemTouchHelper(0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mRecyclerView);
 
         Cursor cursor = getContentResolver().query(RedditArticleContract.Articles.CONTENT_URI, null, null, null, null, null);
 
-        mRedditAdapter = new RedditAdapter(getSupportFragmentManager(), cursor, mTwoPane);
-        mRecyclerView.setAdapter(mRedditAdapter);
+            mRedditAdapter = new RedditAdapter(getSupportFragmentManager(), cursor, mTwoPane);
+            mRecyclerView.setAdapter(mRedditAdapter);
+
+
+        // Code to check if the tablet is displaying an article or if it is blank
+        // If blank then display a handy tutorial page in the blank space
+        if(mRedditAdapter != null && mRedditAdapter.hasFragmentManager() && mTwoPane){
+//            Log.d("ILA", "Reddit Adpater has Fragment Manager");
+//            if(mTwoPane) {
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.item_detail_container);
+                if(!(fragment instanceof ItemDetailFragment)){
+                    Log.d("TESTING", "\r\n -- IT WAS NOT AN INSTANCE --\r\n");
+                    TabletTutorialFragment tabletTutorialFragment = new TabletTutorialFragment();
+                    try{
+                        getSupportFragmentManager().beginTransaction().replace(R.id.item_detail_container, tabletTutorialFragment).commit();
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+//        }
 
 
         Cursor statsCursor = getContentResolver().query(StatsRecordContract.Stats.CONTENT_URI, null, null, null, null, null);
@@ -129,15 +158,15 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
 
         //TODO Come up with a better number or logic here
 
-        int totalRecords = 0;
-        if(cursor != null) {
-            totalRecords = cursor.getCount();
-            Log.d(TAG, "Total Records: " + totalRecords);
-        }
-
-        if(totalRecords < 10){
-            SyncAdapter.performSync();
-        }
+//        int totalRecords = 0;
+//        if(cursor != null) {
+//            totalRecords = cursor.getCount();
+//            Log.d(TAG, "Total Records: " + totalRecords);
+//        }
+//
+//        if(totalRecords < 10){
+//            SyncAdapter.performSync();
+//        }
 
 //        if (cursor != null && !cursor.isClosed()) {
 //            cursor.close();
@@ -158,11 +187,23 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
 
             String idToDelete = mRedditAdapter.getItemID(viewHolder.getAdapterPosition());
 
+            if(idToDelete.equals("tutorial")){
+                Log.d("TESTING", "Attempting to delete the tutorial");
+                //TODO Add a firebase Log to say tutorial completed
+                SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, 0);
+//                showPhoneTutorial = sharedPreferences.getBoolean(PHONE_TUTORIAL_PREF_LABEL, true);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(PHONE_TUTORIAL_PREF_LABEL, false);
+                editor.apply();
+                showPhoneTutorial = true;  //TODO change this when testing complete
+            } else {
+
             Log.d(TAG, "Attempting to delete article with id " + idToDelete);
             int deleted = getContentResolver().delete(RedditArticleContract.Articles.CONTENT_URI,
                     RedditArticleContract.Articles.COL_ID + " = ?", new String[]{idToDelete});
 
             Log.d(TAG, deleted + " rows deleted");
+        }
         }
     }
 
@@ -210,7 +251,51 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         if(data != null){
             Log.d(TAG, "Data Size: " + data.getCount());
             //TODO Put in control to manually swap cursor in case user is in the middle of reading
-            mRedditAdapter.swapCursor(data);
+            if(!showPhoneTutorial) {
+                mRedditAdapter.swapCursor(data);
+            } else {
+                String[] columns = new String[]{
+                        RedditArticleContract.Articles.COL_ID,
+                        RedditArticleContract.Articles.COL_DOMAIN,
+                        RedditArticleContract.Articles.COL_SUBREDDIT,
+                        RedditArticleContract.Articles.COL_TITLE,
+                        RedditArticleContract.Articles.COL_SCORE,
+                        RedditArticleContract.Articles.COL_NSFW,
+                        RedditArticleContract.Articles.COL_COMMENTS,
+                        RedditArticleContract.Articles.COL_CREATED,
+                        RedditArticleContract.Articles.COL_AUTHOR,
+                        RedditArticleContract.Articles.COL_PERMALINK,
+                        RedditArticleContract.Articles.COL_THUMBNAIL};
+
+                MatrixCursor matrixCursor = new MatrixCursor(columns);
+
+                matrixCursor.addRow(new Object[]{
+                        "tutorial",
+                        "Domain",
+                        "WelcomeToRedditExplorer",
+                        "Hi, I see you're new here.  Welcome!\r\n\r\n" +
+                                "Reddit articles are displayed here in a scrolling list.\r\n" +
+                                "If something looks interesting just tap it to read it.\r\n" +
+                                "If something doesn't look interesting then swipe it to the left to get rid of it.\r\n" +
+                                "As you read and swipe, stats are built up on your reading habits.\r\n" +
+                                "To view your stats just tap the link at the top of the screen\r\n\r\n" +
+                                "To get rid of this guide just swipe it off to the left.  Go on, give it a go :)",
+                        123,
+                        "False",
+                        567,
+                        34567890,
+                        "Author",
+                        "Permalink",
+                        "https://b.thumbs.redditmedia.com/y5nDZyxlBjrPFP1RfsDjRH-5SOfg5QBhOUYERMNfnWQ.jpg"
+                });  //TODO Add Tutorial Articles
+
+                MergeCursor mergeCursor = new MergeCursor(new Cursor[]{matrixCursor, data});
+
+                Log.d("TESTING", "SHOW PHONE TUTORIAL");
+
+//                showPhoneTutorial = false;
+                mRedditAdapter.swapCursor(mergeCursor);
+            }
         } else {
             Log.d(TAG, "Incoming cursor was null");
         }

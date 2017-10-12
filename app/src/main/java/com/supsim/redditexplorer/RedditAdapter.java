@@ -79,12 +79,16 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditAdap
                                 e.printStackTrace();
                             }
                         } else {
+                            String articleID = mCursor.getString(ItemListActivity.COL_ID);
+                            if("tutorial".equals(articleID)){
+                                Log.d("TESTING", "THIS WAS THE TUTORIAL SO CLICK DOES NOTHING YET");
+                            } else {
                             Intent intent = new Intent(itemView.getContext(), ItemDetailActivity.class);
                             intent.putExtra(interprocessTitle, mCursor.getString(ItemListActivity.COL_TITLE));
                             intent.putExtra(interprocessSubreddit, mCursor.getString(ItemListActivity.COL_SUBREDDIT));
                             intent.putExtra(interprocessLink, link);
                             itemView.getContext().startActivity(intent);
-                        }
+                        }}
                     } else {
                         Log.d(TAG, "Link was null");
                     }
@@ -98,10 +102,17 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditAdap
 
 
     public RedditAdapter(FragmentManager manager, Cursor cursor, boolean twoPane){
-        mCursor = cursor;
-        mTwoPane = twoPane;
+        this.mCursor = cursor;
+        this.mTwoPane = twoPane;
         this.fragmentManager = manager;
     }
+
+    public boolean hasFragmentManager(){
+        if(this.fragmentManager != null) return true;
+        return false;
+    }
+
+
 
     @Override
     public RedditAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType){
@@ -132,6 +143,9 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditAdap
 
         if(redditAdapterViewHolder.getItemViewType() == TYPE_TOP_CARD){
 //            int redditId = mCursor.getInt(ItemListActivity.COL_ID);
+
+
+
             String redditSubreddit = mCursor.getString(ItemListActivity.COL_SUBREDDIT);
             String redditTitle = mCursor.getString(ItemListActivity.COL_TITLE);
             String redditAuthor = mCursor.getString(ItemListActivity.COL_AUTHOR);
@@ -154,6 +168,8 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditAdap
 
                     }
 
+
+
             } else {
                 Log.d("THUMB", "Thumbnail was null");
             }
@@ -161,6 +177,12 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditAdap
             redditAdapterViewHolder.subredditTextView.setText(redditSubreddit);
             redditAdapterViewHolder.titleTextView.setText(redditTitle);
             redditAdapterViewHolder.authorTextView.setText(redditAuthor);
+
+            if("tutorial".equals(mCursor.getString(ItemListActivity.COL_ID))){
+                redditAdapterViewHolder.authorTextView.setVisibility(View.GONE);
+                redditAdapterViewHolder.thumbnail.setVisibility(View.GONE);
+                redditAdapterViewHolder.titleTextView.setMaxLines(20);
+            }
 
             try{
                 Log.d(TAG, "DATA: " + mCursor.getString(ItemListActivity.COL_PERMALINK));
