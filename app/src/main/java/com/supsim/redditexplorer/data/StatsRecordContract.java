@@ -8,7 +8,7 @@ public class StatsRecordContract {
     public static final String PATH_STATS = "stats";
 
     static final String STAT_DB_NAME = "stats_db";
-    static final int STAT_DB_VERSION = 3;
+    static final int STAT_DB_VERSION = 4;
 
     public static abstract class Stats {
         public static final String NAME = "stats";

@@ -7,4 +7,14 @@
         android:title="View Stats"
         app:showAsAction="ifRoom"
         />
+    <item
+        android:id="@+id/action_log_in_or_out"
+        android:title="Log In"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/action_refresh_articles"
+        android:title="Refresh"
+        app:showAsAction="never"
+        />
 </menu>

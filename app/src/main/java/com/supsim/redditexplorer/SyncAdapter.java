@@ -8,10 +8,12 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SyncResult;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.supsim.redditexplorer.account.AccountGeneral;
+import com.supsim.redditexplorer.data.ActionedArticleContract;
 import com.supsim.redditexplorer.data.RedditArticle;
 import com.supsim.redditexplorer.data.RedditArticleContract;
 
@@ -24,6 +26,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -49,6 +54,30 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                               ContentProviderClient providerClient, SyncResult syncResult){
         Log.d(TAG, "On Perform Sync Ran");
 
+        ArrayList<String> alreadyActioned = new ArrayList<String>();
+
+        Cursor actionedArticles = mContentResolver.query(
+                ActionedArticleContract.Actioned_Articles.CONTENT_URI,
+                null,
+                ActionedArticleContract.Actioned_Articles.COL_ACTIONED_TYPE + " = ?",
+                new String[]{ActionedArticleContract.Actioned_Articles.ACTIONED_TYPE_DELETED},
+                null);
+
+        Log.d("TESTING", " ----  Total number of actioned articles is: " + actionedArticles.getCount() + " -----");
+
+        //TODO Put in some safety here in case article has more than one record (it never should but hey-ho
+
+        for(actionedArticles.moveToFirst(); !actionedArticles.isAfterLast(); actionedArticles.moveToNext()){
+            alreadyActioned.add(actionedArticles.getString(1));
+        }
+
+        actionedArticles.close();
+
+        Log.d("TESTING", " ----  Produced an Array of " + alreadyActioned.size() + " ---- ");
+        Log.d("TESTING", alreadyActioned.toString());
+
+
+
         //TODO Move parsing out to own class
         try {
             String jsonFeed = download(url);
@@ -65,46 +94,50 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                 //TODO change to opt with defaults
 
-                String domain = article.getString("domain");            // The domain the link points to
-                String subreddit = article.getString("subreddit");      // The name of the subreddit it has been posted under
                 String id = article.getString("id");                    // The unique reddit ID
-                String title = article.getString("title");              // The title of the post
-                String score = article.getString("score");              // Total score for the post
-                int nsfw = convertNSFW(article.getBoolean("over_18"));  // NSFW or not - converted to int to make storage easier
-                int num_comments = article.getInt("num_comments");      // Number of comments available
-                long created = article.getLong("created_utc");          // Timestamp of the creation of the post
-                String author = article.getString("author");            // reddit username of the author
-                String thumbnail = article.optString("thumbnail", "");      // scaled thumbnail to accompany the link.  There are also _height and _width fields available
-                String permalink = article.getString("permalink");      // link to the reddit article page - relative link
 
-                RedditArticle redditArticle = new RedditArticle(
-                        domain,
-                        subreddit,
-                        id,
-                        title,
-                        score,
-                        nsfw,
-                        num_comments,
-                        created,
-                        author,
-                        thumbnail,
-                        permalink);
-                Log.d(TAG, i + " " + redditArticle.toString());
+                if(alreadyActioned.contains(id)){  //TODO Change to more efficient format
+                    Log.d("TESTING", "Article ID " + id + " has already been actioned so ignoring");
+                } else {
+                    Log.d("TESTING", "Article ID " + id + " is a new article and therefore will be saved");
 
-                ContentValues redditValues = new ContentValues();
-                redditValues.put(RedditArticleContract.Articles.COL_ID, id);
-                redditValues.put(RedditArticleContract.Articles.COL_SUBREDDIT, subreddit);
-                redditValues.put(RedditArticleContract.Articles.COL_TITLE, title);
-                redditValues.put(RedditArticleContract.Articles.COL_AUTHOR, author);
-                redditValues.put(RedditArticleContract.Articles.COL_PERMALINK, permalink);
-                redditValues.put(RedditArticleContract.Articles.COL_THUMBNAIL, thumbnail);
+                    String domain = article.getString("domain");            // The domain the link points to
+                    String subreddit = article.getString("subreddit");      // The name of the subreddit it has been posted under
 
-                allVector.add(redditValues);
+                    String title = article.getString("title");              // The title of the post
+                    String score = article.getString("score");              // Total score for the post
+                    int nsfw = convertNSFW(article.getBoolean("over_18"));  // NSFW or not - converted to int to make storage easier
+                    int num_comments = article.getInt("num_comments");      // Number of comments available
+                    long created = article.getLong("created_utc");          // Timestamp of the creation of the post
+                    String author = article.getString("author");            // reddit username of the author
+                    String thumbnail = article.optString("thumbnail", "");      // scaled thumbnail to accompany the link.  There are also _height and _width fields available
+                    String permalink = article.getString("permalink");      // link to the reddit article page - relative link
 
-//                Log.d("TEST", allVector.toString());
+                    RedditArticle redditArticle = new RedditArticle(
+                            domain,
+                            subreddit,
+                            id,
+                            title,
+                            score,
+                            nsfw,
+                            num_comments,
+                            created,
+                            author,
+                            thumbnail,
+                            permalink);
+                    Log.d(TAG, i + " " + redditArticle.toString());
+
+                    ContentValues redditValues = new ContentValues();
+                    redditValues.put(RedditArticleContract.Articles.COL_ID, id);
+                    redditValues.put(RedditArticleContract.Articles.COL_SUBREDDIT, subreddit);
+                    redditValues.put(RedditArticleContract.Articles.COL_TITLE, title);
+                    redditValues.put(RedditArticleContract.Articles.COL_AUTHOR, author);
+                    redditValues.put(RedditArticleContract.Articles.COL_PERMALINK, permalink);
+                    redditValues.put(RedditArticleContract.Articles.COL_THUMBNAIL, thumbnail);
+
+                    allVector.add(redditValues);
+                }
             }
-
-//            Log.d(TAG, "Vector Size: " + allVector.size());
 
             if(allVector.size() > 0){
                 ContentValues[] contentValuesArray = new ContentValues[allVector.size()];

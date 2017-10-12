@@ -62,6 +62,12 @@
             android:exported="false"
             />
 
+        <provider
+            android:authorities="com.supsim.redditexplorer.articlesync"
+            android:name=".data.ActionedArticleProvider"
+            android:exported="false"
+            />
+
         <service
             android:name=".SyncService"
             android:exported="true">

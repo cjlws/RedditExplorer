@@ -28,4 +28,9 @@ public class Stat {
     public int getNumberOfViews(){
         return this.numberOfViews;
     }
+
+    @Override
+    public String toString(){
+        return "Sub: " + this.subreddit + ", Views: " + this.numberOfViews + ", Rank: " + this.rank;
+    }
 }

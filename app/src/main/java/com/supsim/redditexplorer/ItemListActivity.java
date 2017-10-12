@@ -1,6 +1,7 @@
 package com.supsim.redditexplorer;
 
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -8,6 +9,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.MergeCursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -26,6 +28,7 @@ import android.view.View;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.supsim.redditexplorer.account.AccountGeneral;
+import com.supsim.redditexplorer.data.ActionedArticleContract;
 import com.supsim.redditexplorer.data.RedditArticleContract;
 import com.supsim.redditexplorer.data.StatsRecordContract;
 
@@ -40,7 +43,7 @@ import com.supsim.redditexplorer.data.StatsRecordContract;
 public class ItemListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, RedditItemTouchHelper.RedditItemTouchHelperListener {
 
     //TODO Enhance Stats Database.  Need to make it so that a. articles are only recorded once and b. if they have been dismissed then don't show them again
-
+    //TODO Add logged in functionality
 
 
     private static final String TAG = "ItemsListActivity";
@@ -110,9 +113,9 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
             mTwoPane = true;
         }
 
-        if(mTwoPane) showPhoneTutorial = false;
+        if (mTwoPane) showPhoneTutorial = false;
 
-        mRecyclerView = (RecyclerView)findViewById(R.id.item_list);
+        mRecyclerView = (RecyclerView) findViewById(R.id.item_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         View emptyView = new View(this);
         mRecyclerView.setHasFixedSize(true);
@@ -124,31 +127,31 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
 
         Cursor cursor = getContentResolver().query(RedditArticleContract.Articles.CONTENT_URI, null, null, null, null, null);
 
-            mRedditAdapter = new RedditAdapter(getSupportFragmentManager(), cursor, mTwoPane);
-            mRecyclerView.setAdapter(mRedditAdapter);
+        mRedditAdapter = new RedditAdapter(getSupportFragmentManager(), cursor, mTwoPane);
+        mRecyclerView.setAdapter(mRedditAdapter);
 
 
         // Code to check if the tablet is displaying an article or if it is blank
         // If blank then display a handy tutorial page in the blank space
-        if(mRedditAdapter != null && mRedditAdapter.hasFragmentManager() && mTwoPane){
+        if (mRedditAdapter != null && mRedditAdapter.hasFragmentManager() && mTwoPane) {
 //            Log.d("ILA", "Reddit Adpater has Fragment Manager");
 //            if(mTwoPane) {
-                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.item_detail_container);
-                if(!(fragment instanceof ItemDetailFragment)){
-                    Log.d("TESTING", "\r\n -- IT WAS NOT AN INSTANCE --\r\n");
-                    TabletTutorialFragment tabletTutorialFragment = new TabletTutorialFragment();
-                    try{
-                        getSupportFragmentManager().beginTransaction().replace(R.id.item_detail_container, tabletTutorialFragment).commit();
-                    } catch (Exception e){
-                        e.printStackTrace();
-                    }
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.item_detail_container);
+            if (!(fragment instanceof ItemDetailFragment)) {
+                Log.d("TESTING", "\r\n -- IT WAS NOT AN INSTANCE --\r\n");
+                TabletTutorialFragment tabletTutorialFragment = new TabletTutorialFragment();
+                try {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.item_detail_container, tabletTutorialFragment).commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
+        }
 //        }
 
 
         Cursor statsCursor = getContentResolver().query(StatsRecordContract.Stats.CONTENT_URI, null, null, null, null, null);
-        if (statsCursor != null){
+        if (statsCursor != null) {
             Log.d("STATS", "There are " + statsCursor.getCount() + " stats records");
         }
 
@@ -176,57 +179,66 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
     }
 
     @Override
-    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position){
-        if(viewHolder instanceof RedditAdapter.RedditAdapterViewHolder){
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+        if (viewHolder instanceof RedditAdapter.RedditAdapterViewHolder) {
 //            mRedditAdapter.removeItem(viewHolder.getAdapterPosition());
 //            mRedditAdapter.notifyDataSetChanged();
             //TODO Lots more to do here!
 
             Log.d(TAG, "POSITION: " + position);
-            Log.d(TAG, "ADAP POSITION: " + viewHolder.getAdapterPosition() );
+            Log.d(TAG, "ADAP POSITION: " + viewHolder.getAdapterPosition());
 
             String idToDelete = mRedditAdapter.getItemID(viewHolder.getAdapterPosition());
 
-            if(idToDelete.equals("tutorial")){
+            if (idToDelete.equals("tutorial")) {
                 Log.d("TESTING", "Attempting to delete the tutorial");
                 //TODO Add a firebase Log to say tutorial completed
                 SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, 0);
-//                showPhoneTutorial = sharedPreferences.getBoolean(PHONE_TUTORIAL_PREF_LABEL, true);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean(PHONE_TUTORIAL_PREF_LABEL, false);
                 editor.apply();
-                showPhoneTutorial = true;  //TODO change this when testing complete
+                showPhoneTutorial = false;
+                mRedditAdapter.notifyDataSetChanged();
             } else {
 
-            Log.d(TAG, "Attempting to delete article with id " + idToDelete);
-            int deleted = getContentResolver().delete(RedditArticleContract.Articles.CONTENT_URI,
-                    RedditArticleContract.Articles.COL_ID + " = ?", new String[]{idToDelete});
+                Log.d(TAG, "Attempting to delete article with id " + idToDelete);
+                int deleted = getContentResolver().delete(RedditArticleContract.Articles.CONTENT_URI,
+                        RedditArticleContract.Articles.COL_ID + " = ?", new String[]{idToDelete});
 
-            Log.d(TAG, deleted + " rows deleted");
-        }
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(ActionedArticleContract.Actioned_Articles.COL_ACTIONED_REDDIT_ID, idToDelete);
+                contentValues.put(ActionedArticleContract.Actioned_Articles.COL_ACTIONED_TYPE, ActionedArticleContract.Actioned_Articles.ACTIONED_TYPE_DELETED);
+
+                Uri inserted = getContentResolver().insert(ActionedArticleContract.Actioned_Articles.CONTENT_URI, contentValues);
+
+                //TODO Add to stats database
+
+                Log.d(TAG, deleted + " rows deleted");
+                Log.d(TAG, "Inserted: " + inserted.toString());
+            }
         }
     }
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
     }
 
     @Override
-    protected void onStop(){
+    protected void onStop() {
         super.onStop();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.action_view_stats){
+        if (id == R.id.action_view_stats) {
             Intent openStats = new Intent(this, StatsActivity.class);
             startActivity(openStats);
             return true;
@@ -234,7 +246,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         return super.onOptionsItemSelected(item);
     }
 
-    public Loader<Cursor> onCreateLoader(int id, Bundle args){
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(TAG, "On Create Loader Ran");
         return new CursorLoader(
                 getApplicationContext(),
@@ -246,12 +258,12 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         );
     }
 
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data){
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.d(TAG, "On Load Finished Ran");
-        if(data != null){
+        if (data != null) {
             Log.d(TAG, "Data Size: " + data.getCount());
             //TODO Put in control to manually swap cursor in case user is in the middle of reading
-            if(!showPhoneTutorial) {
+            if (!showPhoneTutorial) {
                 mRedditAdapter.swapCursor(data);
             } else {
                 String[] columns = new String[]{
@@ -301,7 +313,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         }
     }
 
-    public void onLoaderReset(Loader<Cursor> loader){
+    public void onLoaderReset(Loader<Cursor> loader) {
         Log.d(TAG, "On Loader Reset Ran");
         mRedditAdapter.swapCursor(null);
     }

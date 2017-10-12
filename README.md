@@ -8,7 +8,7 @@ Still TODO:
 * Fix phone view
 * Finalise Tablet View
 * Unit tests
-* Implement tutorial system for phone
+* Implement tutorial system for phone - Done (sort of)
 * Implement tutorial system for tablet - Done (sort of)
 * Fix comment view
 
