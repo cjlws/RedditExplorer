@@ -5,31 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/CommentBlock"
     >
     <TextView
         android:id="@+id/comment_number_textview"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        tools:text="1"
+        tools:text="1.1K"
+        android:paddingTop="@dimen/comments_block_vertical_spacing"
         />
     <LinearLayout
-        android:layout_weight="7"
+        android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingStart="@dimen/comments_block_horizontal_spacing"
+        android:paddingEnd="0dp">
         <TextView
             android:id="@+id/comment_author_textview"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="Joe Bloggs"
-            android:textStyle="bold"
+            style="@style/CommentBlockTextAuthor"
             />
         <TextView
             android:id="@+id/comment_body"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="Blah, blah, blah"
+            style="@style/CommentBlockText"
             />
     </LinearLayout>
 

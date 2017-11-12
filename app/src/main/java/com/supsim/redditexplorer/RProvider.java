@@ -8,10 +8,9 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.util.Log;
+import android.support.annotation.NonNull;
 
 import com.supsim.redditexplorer.data.DatabaseClient;
-import com.supsim.redditexplorer.data.RedditArticle;
 import com.supsim.redditexplorer.data.RedditArticleContract;
 
 public class RProvider extends ContentProvider {
@@ -35,7 +34,7 @@ public class RProvider extends ContentProvider {
     }
 
     @Override
-    public String getType(Uri uri){
+    public String getType(@NonNull Uri uri){
         switch (uriMatcher.match(uri)){
             case ARTICLE:
                 return RedditArticleContract.Articles.CONTENT_TYPE;
@@ -47,7 +46,7 @@ public class RProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection,
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
         Cursor cursor;
         switch (uriMatcher.match(uri)){
@@ -80,8 +79,7 @@ public class RProvider extends ContentProvider {
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues values){
-//        Log.d("INSERT", "Request to insert " + values.toString());
+    public Uri insert(@NonNull Uri uri, ContentValues values){
         Uri returnUri;
         long _id;
 
@@ -100,8 +98,7 @@ public class RProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs){
-        Log.d("CONTENT_DELETE", "Request to delete " + selection);
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs){
         int rows;
         switch (uriMatcher.match(uri)){
             case ARTICLE:
@@ -119,7 +116,7 @@ public class RProvider extends ContentProvider {
 
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs){
+    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs){
         int rows;
         switch (uriMatcher.match(uri)){
             case ARTICLE:

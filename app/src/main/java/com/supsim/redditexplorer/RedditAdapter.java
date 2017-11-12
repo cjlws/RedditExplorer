@@ -1,32 +1,30 @@
 package com.supsim.redditexplorer;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.supsim.redditexplorer.Network.MySingleton;
-import com.supsim.redditexplorer.data.ActionedArticleContract;
-import com.supsim.redditexplorer.data.RedditArticleContract;
+import com.supsim.redditexplorer.data.RedditArticle;
 
-import static com.supsim.redditexplorer.ItemDetailFragment.interprocessLink;
-import static com.supsim.redditexplorer.ItemDetailFragment.interprocessSubreddit;
-import static com.supsim.redditexplorer.ItemDetailFragment.interprocessTitle;
+import static com.supsim.redditexplorer.Tools.addRToSubreddit;
+import static com.supsim.redditexplorer.Tools.formatAuthorAndTime;
+import static com.supsim.redditexplorer.Tools.formatScore;
+import static com.supsim.redditexplorer.Tools.removeXMLStringEncoding;
 
-
-public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditAdapterViewHolder> {
+class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditAdapterViewHolder> {
 
 
     private Cursor mCursor;
@@ -38,145 +36,78 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditAdap
     private static final int TYPE_SECOND_CARD = 2;
     private static final int TYPE_SUB_CARD = 3;
 
-    public class RedditAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class RedditAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-//        String test = ItemDetailFragment.ARG_ITEM_ID;
+        final TextView subredditTextView;
+        final TextView titleTextView;
+        final TextView authorTextView;
+        final NetworkImageView thumbnail;
+        final TextView scoreTextView;
+        final TextView commentsTextView;
+        final TextView domainTextView;
+        final NetworkImageView previewImage;
 
-        public final TextView subredditTextView;
-        public final TextView titleTextView;
-        public final TextView authorTextView;
-        public final NetworkImageView thumbnail;
 
-        public RedditAdapterViewHolder(final View view) {
+        RedditAdapterViewHolder(final View view) {
             super(view);
             mContext = view.getContext();
             this.subredditTextView = (TextView) view.findViewById(R.id.subreddittextview);
             this.titleTextView = (TextView) view.findViewById(R.id.titletextview);
             this.authorTextView = (TextView) view.findViewById(R.id.authortextview);
-            this.thumbnail = (NetworkImageView) view.findViewById(R.id.listViewThumbnail);
+            this.thumbnail = (NetworkImageView) view.findViewById(R.id.thumbnailHolder);
+            this.scoreTextView = (TextView) view.findViewById(R.id.list_content_top_score);
+            this.commentsTextView = (TextView) view.findViewById(R.id.list_content_top_comments);
+            this.domainTextView = (TextView) view.findViewById(R.id.item_list_top_domain);
+            this.previewImage = (NetworkImageView) view.findViewById(R.id.previewImageHolder);
+
             view.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
 
-
-
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
-                Log.d(TAG, "Positon: " + position);
                 if (mCursor != null) {
                     mCursor.moveToPosition(position);
-                    String link = mCursor.getString(ItemListActivity.COL_PERMALINK);  //TODO add a permalink for the tutorial to take it someplace nice?
+                    RedditArticle redditArticle = new RedditArticle(mCursor);
 
+                    if (mTwoPane) {
 
-                    String articleID = mCursor.getString(ItemListActivity.COL_ID);
-                    Log.d("TESTING", "Attempting to Read Article "+ articleID);
-                    //TODO Add a Read +1 to the stats database for the subreddit
-                    //TODO Add a read to the Actioned Database to show article has been read
+                        Bundle arguments = redditArticle.getRedditArticleBundle();
+                        ItemDetailFragment fragment = new ItemDetailFragment();
+                        fragment.setArguments(arguments);
 
-
-                    if (link != null) {
-                        if (mTwoPane) {
-
-                            recordVist(mCursor.getString(ItemListActivity.COL_SUBREDDIT), articleID);
-
-                            Bundle arguments = new Bundle();
-                            arguments.putString(ItemDetailFragment.interprocessTitle, mCursor.getString(ItemListActivity.COL_TITLE));
-                            arguments.putString(ItemDetailFragment.interprocessSubreddit, mCursor.getString(ItemListActivity.COL_SUBREDDIT));
-                            arguments.putString(ItemDetailFragment.interprocessLink, link);
-                            ItemDetailFragment fragment = new ItemDetailFragment();
-                            fragment.setArguments(arguments);
-                            try {
-                                if (fragmentManager != null) {
-                                    fragmentManager.beginTransaction().replace(R.id.item_detail_container, fragment).commit();
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                        try {
+                            if (fragmentManager != null) {
+                                fragmentManager.beginTransaction().replace(R.id.item_detail_container, fragment).commit();
                             }
-                        } else {
-                            if ("tutorial".equals(articleID)) {
-                                Log.d("TESTING", "THIS WAS THE TUTORIAL SO CLICK DOES NOTHING YET");
-                            } else {
-
-                                recordVist(mCursor.getString(ItemListActivity.COL_SUBREDDIT), articleID);
-
-                                Intent intent = new Intent(itemView.getContext(), ItemDetailActivity.class);
-                                intent.putExtra(interprocessTitle, mCursor.getString(ItemListActivity.COL_TITLE));
-                                intent.putExtra(interprocessSubreddit, mCursor.getString(ItemListActivity.COL_SUBREDDIT));
-                                intent.putExtra(interprocessLink, link);
-                                itemView.getContext().startActivity(intent);
-                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     } else {
-                        Log.d(TAG, "Link was null");
+                        if (!"tutorial".equals(redditArticle.getId())) {
+
+                            Intent intent = new Intent(itemView.getContext(), ItemDetailActivity.class);
+                            intent.putExtras(redditArticle.getRedditArticleBundle());
+                            Log.d(TAG, redditArticle.getRedditArticleBundle().toString());
+                            itemView.getContext().startActivity(intent);
+                        }
                     }
-                } else {
-                    Log.d(TAG, "Cursor = null");
                 }
             }
         }
     }
 
-    public void recordVist(String subreddit, String articleId){
-        if (addRecordToActionedDatabase(articleId)) addRecordToStatsDatabase(subreddit);
-    }
 
-    private void addRecordToStatsDatabase(String subreddit){
-        Log.d(TAG, "Add a plus 1 to the stats database for " + subreddit);
-        //TODO - This is currently happening somewhere else but the filtering logic here works
-
-    }
-
-    private boolean addRecordToActionedDatabase(String articleId){
-        Log.d(TAG, "Add ID " + articleId + " to the actioned database");
-
-        Cursor actionedArticles = mContext.getContentResolver().query(
-                ActionedArticleContract.Actioned_Articles.CONTENT_URI,
-                null,
-                ActionedArticleContract.Actioned_Articles.COL_ACTIONED_TYPE + " = ?",
-                new String[]{ActionedArticleContract.Actioned_Articles.ACTIONED_TYPE_READ},
-                null);
-
-        if(actionedArticles != null && actionedArticles.getCount() > 0){
-            Log.d(TAG, "This article already has a record - don't add to stats");
-
-            if(!actionedArticles.isClosed()) {
-                actionedArticles.close();
-            }
-
-            return false;
-
-        } else {
-
-            Log.d(TAG, "This article needs recording someplace");
-
-            ContentValues actionedValues = new ContentValues();
-            actionedValues.put(ActionedArticleContract.Actioned_Articles.COL_ACTIONED_REDDIT_ID, articleId);
-            actionedValues.put(ActionedArticleContract.Actioned_Articles.COL_ACTIONED_TYPE, ActionedArticleContract.Actioned_Articles.ACTIONED_TYPE_READ);
-
-            Uri newUri = mContext.getContentResolver().insert(ActionedArticleContract.Actioned_Articles.CONTENT_URI, actionedValues);
-            Log.d(TAG, "Inserted Record: " + newUri.toString());
-
-            if(actionedArticles != null && !actionedArticles.isClosed()) {
-                actionedArticles.close();
-            }
-            return true;
-        }
-
-
-    }
-
-
-    public RedditAdapter(FragmentManager manager, Cursor cursor, boolean twoPane) {
+    RedditAdapter(FragmentManager manager, Cursor cursor, boolean twoPane) {
         this.mCursor = cursor;
         this.mTwoPane = twoPane;
         this.fragmentManager = manager;
     }
 
-    public boolean hasFragmentManager() {
-        if (this.fragmentManager != null) return true;
-        return false;
+    boolean hasFragmentManager() {
+        return this.fragmentManager != null;
     }
 
 
@@ -190,11 +121,9 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditAdap
                 return new RedditAdapterViewHolder(view);
             } else if (viewType == TYPE_SECOND_CARD) {
                 View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_list_content_second, viewGroup, false);
-                view.setFocusable(true);
                 return new RedditAdapterViewHolder(view);
             } else {
                 View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_list_content, viewGroup, false);
-                view.setFocusable(true);
                 return new RedditAdapterViewHolder(view);
             }
         } else {
@@ -203,78 +132,180 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditAdap
     }
 
     @Override
-    public void onBindViewHolder(RedditAdapterViewHolder redditAdapterViewHolder, int position) {
+    public void onBindViewHolder(final RedditAdapterViewHolder redditAdapterViewHolder, int position) {
+
+
         mCursor.moveToPosition(position);
 
         if (redditAdapterViewHolder.getItemViewType() == TYPE_TOP_CARD) {
-//            int redditId = mCursor.getInt(ItemListActivity.COL_ID);
+
+            redditAdapterViewHolder.thumbnail.setImageUrl(null, null);  // Flatten thumbnail
+            redditAdapterViewHolder.previewImage.setImageUrl(null, null);  // Flatten preview image
+            if (redditAdapterViewHolder.previewImage.getVisibility() == View.VISIBLE) // Hide Preview
+                redditAdapterViewHolder.previewImage.setVisibility(View.GONE);
 
 
-            if ("tutorial".equals(mCursor.getString(ItemListActivity.COL_ID))) {
+            final RedditArticle redditArticle = new RedditArticle(mCursor);  // Recreate article from cursor
+
+            if ("tutorial".equals(redditArticle.getId())) {
+                // If the card type is the tutorial then special formatting needs to be done
                 redditAdapterViewHolder.authorTextView.setVisibility(View.GONE);
-                redditAdapterViewHolder.thumbnail.setVisibility(View.GONE);
                 redditAdapterViewHolder.titleTextView.setMaxLines(20);
             } else {
-                redditAdapterViewHolder.authorTextView.setVisibility(View.VISIBLE);
-                redditAdapterViewHolder.titleTextView.setVisibility(View.VISIBLE);
-            }
-
-            String redditSubreddit = mCursor.getString(ItemListActivity.COL_SUBREDDIT);
-            String redditTitle = mCursor.getString(ItemListActivity.COL_TITLE);
-            String redditAuthor = mCursor.getString(ItemListActivity.COL_AUTHOR);
-            String redditThumbnail = mCursor.getString(ItemListActivity.COL_THUMBNAIL);
-
-            if (redditThumbnail != null) {
-
-                if (redditThumbnail.isEmpty() || redditThumbnail.equals("default") || redditThumbnail.equals("self") || redditThumbnail.equals("image")) {
-                    redditAdapterViewHolder.thumbnail.setVisibility(View.GONE);
-                } else {
-
-                    if (redditAdapterViewHolder.thumbnail != null) {
-                        Log.d(TAG, "Yay, there's a thumbnail holdr!");
-
-                        redditAdapterViewHolder.thumbnail.setVisibility(View.VISIBLE);
-                        ImageLoader imageLoader = MySingleton.getInstance(mContext).getImageLoader();
-                        redditAdapterViewHolder.thumbnail.setImageUrl(redditThumbnail, imageLoader);
-
-                    }
-
+                // If normal article then make sure any changes made by tutorial are undone
+                if (redditAdapterViewHolder.authorTextView.getVisibility() != View.VISIBLE) {
+                    redditAdapterViewHolder.authorTextView.setVisibility(View.VISIBLE);
                 }
 
+                redditAdapterViewHolder.authorTextView.setText(formatAuthorAndTime(mContext,
+                        removeXMLStringEncoding(redditArticle.getAuthor()),
+                        redditArticle.getCreated()
+                ));
+
+                redditAdapterViewHolder.scoreTextView.setText(formatScore(redditArticle.getScore()));
+                redditAdapterViewHolder.domainTextView.setText(formatDomain(redditArticle.getDomain()));
+            }
+
+
+            redditAdapterViewHolder.subredditTextView.setText(Tools.addRToSubreddit(redditArticle.getSubreddit()));
+            redditAdapterViewHolder.titleTextView.setText(redditArticle.getTitle());
+
+
+            // Attempt to show some sort of image in the card (to make it all pretty)
+            // First check to see if there is a preview image that is a good fit for the device
+            // If there are then display it (either full-width or second best)
+            // If there is not then see if there is a thumbnail available - use if there is
+            // Failing all of the above just go with the text
+
+
+            if (!redditArticle.getPreviewOptions().isEmpty()) {
+
+                redditAdapterViewHolder.previewImage.setVisibility(View.VISIBLE);
+
+
+                int width = redditAdapterViewHolder.previewImage.getMeasuredWidth();
+                if (width == 0) {
+                    try {
+
+                        ViewTreeObserver viewTreeObserver = redditAdapterViewHolder.previewImage.getViewTreeObserver();
+
+                        viewTreeObserver.addOnGlobalLayoutListener(
+                                new ViewTreeObserver.OnGlobalLayoutListener() {
+                                    @Override
+                                    public void onGlobalLayout() {
+                                        redditAdapterViewHolder.previewImage.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                                        int width = redditAdapterViewHolder.previewImage.getMeasuredWidth();
+                                        if (width != 0) {
+                                            determineAndDisplayBestImage(redditAdapterViewHolder, redditArticle, width);
+                                        }
+                                    }
+                                });
+
+                    } catch (Exception e) {
+                        // Problem doing the whole width measurement thing so make so to clean up
+                        if (redditAdapterViewHolder.previewImage.getVisibility() == View.VISIBLE) {
+                            redditAdapterViewHolder.previewImage.setVisibility(View.GONE);
+                        }
+                        e.printStackTrace();
+                    }
+
+
+                } else {
+                    determineAndDisplayBestImage(redditAdapterViewHolder, redditArticle, width);
+                }
 
             } else {
-                Log.d("THUMB", "Thumbnail was null");
+                if (redditAdapterViewHolder.previewImage.getVisibility() == View.VISIBLE) {
+                    redditAdapterViewHolder.previewImage.setVisibility(View.GONE);
+                }
+
+                if (!redditArticle.getSafeThumbnail().isEmpty()) {
+
+                    ImageLoader imageLoader = MySingleton.getInstance(mContext).getImageLoader();
+                    if (redditAdapterViewHolder.thumbnail.getVisibility() == View.GONE)
+                        redditAdapterViewHolder.thumbnail.setVisibility(View.VISIBLE);
+                    redditAdapterViewHolder.thumbnail.setAdjustViewBounds(true);
+                    redditAdapterViewHolder.thumbnail.setImageUrl(redditArticle.getSafeThumbnail(), imageLoader);
+
+                } else {
+                    if (redditAdapterViewHolder.thumbnail.getVisibility() == View.VISIBLE)
+                        redditAdapterViewHolder.thumbnail.setVisibility(View.GONE);
+                }
             }
+
+
+        } else {
+
+            // This clause is for the second and subsequent articles
+
+            String redditSubreddit = addRToSubreddit(mCursor.getString(ItemListActivity.COL_SUBREDDIT));
+            String redditTitle = removeXMLStringEncoding(mCursor.getString(ItemListActivity.COL_TITLE));
+            String redditAuthor = removeXMLStringEncoding(mCursor.getString(ItemListActivity.COL_AUTHOR));
 
             redditAdapterViewHolder.subredditTextView.setText(redditSubreddit);
             redditAdapterViewHolder.titleTextView.setText(redditTitle);
             redditAdapterViewHolder.authorTextView.setText(redditAuthor);
 
-
-            try {
-                Log.d(TAG, "DATA: " + mCursor.getString(ItemListActivity.COL_PERMALINK));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            String redditId = mCursor.getString(ItemListActivity.COL_ID);
-            String redditSubreddit = mCursor.getString(ItemListActivity.COL_SUBREDDIT);
-            String redditTitle = mCursor.getString(ItemListActivity.COL_TITLE);
-            String redditAuthor = mCursor.getString(ItemListActivity.COL_AUTHOR);
-
-            redditAdapterViewHolder.subredditTextView.setText(redditSubreddit);
-            redditAdapterViewHolder.titleTextView.setText(redditId + " " + redditTitle);
-            redditAdapterViewHolder.authorTextView.setText(redditAuthor);
-
-            try {
-                Log.d(TAG, "DATA: " + mCursor.getString(ItemListActivity.COL_PERMALINK));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
 
+    }
+
+    private void determineAndDisplayBestImage(RedditAdapterViewHolder redditAdapterViewHolder, RedditArticle redditArticle, int width) {
+
+        String bestPreview = redditArticle.getBestPreviewImage(width);
+
+        if (bestPreview.isEmpty()) {
+
+            // Big preview wasn't available so attempting to find alternatives
+
+            redditAdapterViewHolder.previewImage.setVisibility(View.GONE);  // Hide preview image
+
+            String nextBestPreview = redditArticle.getBestPreviewImage(width / 3);
+
+            if (!nextBestPreview.isEmpty()) {
+
+                // There is a semi-decent view available - put it in the thumbnail bit
+
+                ImageLoader imageLoader = MySingleton.getInstance(mContext).getImageLoader();
+                if (redditAdapterViewHolder.thumbnail.getVisibility() == View.GONE)
+                    redditAdapterViewHolder.thumbnail.setVisibility(View.VISIBLE);
+                redditAdapterViewHolder.thumbnail.setAdjustViewBounds(true);
+                redditAdapterViewHolder.thumbnail.setImageUrl(nextBestPreview, imageLoader);
+                redditAdapterViewHolder.thumbnail.setContentDescription(" To Do");
+
+            } else {
+
+                if (redditAdapterViewHolder.previewImage.getVisibility() == View.VISIBLE)
+                    redditAdapterViewHolder.previewImage.setVisibility(View.GONE);
+
+                if (!redditArticle.getSafeThumbnail().isEmpty()) {
+
+                    // Case is that there is no suitable preview - trying thumbnail
+
+                    ImageLoader imageLoader = MySingleton.getInstance(mContext).getImageLoader();
+                    if (redditAdapterViewHolder.thumbnail.getVisibility() == View.GONE)
+                        redditAdapterViewHolder.thumbnail.setVisibility(View.VISIBLE);
+                    redditAdapterViewHolder.thumbnail.setAdjustViewBounds(true);
+                    redditAdapterViewHolder.thumbnail.setImageUrl(redditArticle.getSafeThumbnail(), imageLoader);
+
+                }
+            }
+
+        } else {
+
+            if (redditAdapterViewHolder.thumbnail.getVisibility() == View.VISIBLE)
+                redditAdapterViewHolder.thumbnail.setVisibility(View.GONE);
+
+            // Best Preview wasn't empty so attempt to put the big image in place now
+
+            redditAdapterViewHolder.previewImage.setVisibility(View.VISIBLE);
+            ImageLoader imageLoader = MySingleton.getInstance(mContext).getImageLoader();
+            redditAdapterViewHolder.previewImage.setImageUrl(bestPreview, imageLoader);
+        }
 
     }
+
 
     @Override
     public int getItemViewType(int position) {
@@ -286,7 +317,6 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditAdap
             default:
                 return TYPE_SUB_CARD;
         }
-//        return position == 0 ? TYPE_TOP_CARD : TYPE_SUB_CARD;
     }
 
     @Override
@@ -299,13 +329,20 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditAdap
         return mCursor;
     }
 
-    public void swapCursor(Cursor newCursor) {
+    void swapCursor(Cursor newCursor) {
         mCursor = newCursor;
         notifyDataSetChanged();
     }
 
-    public String getItemID(int position) {
+    String getItemID(int position) {
         mCursor.moveToPosition(position);
         return mCursor.getString(ItemListActivity.COL_ID);
     }
+
+    @NonNull
+    private String formatDomain(@NonNull String domain) {
+        return mContext.getString(
+                R.string.formatting_format_domain_with_brackets, domain);
+    }
+
 }

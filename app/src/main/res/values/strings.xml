@@ -5,5 +5,75 @@
     <string name="title_activity_stats">StatsActivity</string>
 
     <string name="post_author_and_time_format">Posted %1$s ago by %2$s</string>
-    <string name="post_subreddit_format">r/%1$s</string>
+    <!--<string name="post_subreddit_format">r/%1$s</string>-->
+
+
+    <string name="widget_not_enough_views_for_stats">Get reading to generate Stats!!</string>
+    <string name="widget_top_three_label">Your Top Three Most Liked Subs</string>
+    <string name="widget_rank_first">1st</string>
+    <string name="widget_rank_second">2nd</string>
+    <string name="widget_rank_third">3rd</string>
+
+    <string name="menu_action_view_stats">View Stats</string>
+    <string name="menu_action_refresh">Refresh</string>
+    <string name="menu_action_clear_stats">Clear Stats</string>
+
+    <string name="comment_author_error_placeholder">Error</string>
+    <string name="comment_body_error_placholder">There was an error fetching this comment</string>
+
+    <!-- For Testing -->
+    <string name="testing_lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam libero ligula, laoreet a viverra eu, eleifend a dui. Maecenas pretium aliquam enim non pharetra. Quisque posuere mauris a massa egestas aliquet. Integer tincidunt leo at orci pulvinar elementum. Suspendisse potenti. Sed posuere, nunc ut aliquet maximus, enim est sodales erat, sed ullamcorper massa sapien at nunc. Donec tortor lacus, mattis vel rutrum a, dictum ultrices neque. Curabitur pulvinar vehicula porta. Cras sit amet urna ac lacus finibus facilisis. Phasellus euismod at ex a tincidunt.</string>
+
+
+    <string name="tablet_view_sub_and_domain">%1$s (%2$s)</string>
+    <string name="tablet_view_showing_number_of_comments">Top %1$d comments:</string>
+
+    <string name="error_no_detail_page_response">No response from server</string>
+    <string name="error_problem_downloading_page">There was a problem downloading the post.  Soz :(</string>
+    <string name="error_all_caught_up">All caught up, yo\n\nCheck back later or select refresh from the menu to see if there\'s anything new</string>
+    <string name="error_no_data_for_table">The Stats Table would normally go here but uou\'ve not generated any stats yet!\n\nCheck back after you\'ve liked some articles</string>
+    <string name="error_no_data_for_chart">Not enough data to make a meaningful chart, soz</string>
+
+    <string name="placeholder_loading_comments">Downloading Comments</string>
+    <string name="placeholder_loading_comments_with_title">Downloading Comments for \"%1$s\"..</string>
+
+    <string name="tutorial_tablet_headline">Hi, I see you\'re new here.  Welcome!</string>
+    <string name="tutorial_tablet_body">Reddit articles are displayed in a scrolling list at the side.\n\nIf you like the look of something swipe it to the right to \'Like\' it.\nIf something doesn\'t look interesting then swipe it to the left to get rid of it.\nNot sure? Tap on an article to read it in more detail.\n\nAs you read and swipe, stats are built up on your reading habits.\nTo view your stats just tap the link at the top of the screen\nTo get rid of this guide just tap on your first item in the reading list.</string>
+    <string name="tutorial_tablet_call_to_action">Go on, give it a go :)</string>
+    <string name="tutorial_phone_body">Hi, I see you\'re new here.  Welcome!\nReddit articles are displayed here in a scrolling list.\nIf something looks interesting just tap it to read it.\nIf something doesn\'t look interesting then swipe it to the left to get rid of it.\nAs you read and swipe, stats are built up on your reading habits.\nTo view your stats just tap the link at the top of the screen\n\nTo get rid of this guide just swipe it off to the left.  Go on, give it a go :)</string>
+
+    <string name="tools_format_time_day">%1$d day</string>
+    <string name="tools_format_time_days">%1$d days</string>
+    <string name="tools_format_time_hour">%1$d hour</string>
+    <string name="tools_format_time_hours">%1$d hours</string>
+    <string name="tools_format_time_minute">%1$d minute</string>
+    <string name="tools_format_time_minutes">%1$d minutes</string>
+    <string name="tools_format_time_second">%1$d second</string>
+    <string name="tools_format_time_seconds">%1$d seconds</string>
+    <string name="tools_format_time_hours_and_minutes">%1$s, %2$s</string>
+    <string name="tools_format_time_minutes_and_seconds">%1$s, %2$s</string>
+
+    <string name="stats_activity_page_title">Latest Stats</string>
+    <string name="stats_table_header_label_rank">#</string>
+    <string name="stats_table_header_label_sub">Subreddit</string>
+    <string name="stats_table_header_label_likes">Likes</string>
+    <string name="stats_action_confirmation_delete_all">Deleting all %1$d Stats</string>
+    <string name="stats_action_error_delete_all">Nothing to delete</string>
+    <string name="stats_chart_label_for_other">Other</string>
+    <string name="stats_chart_label_for_data">Top Views</string>
+    <string name="stats_chart_label_for_pie_centre">% of Total Views</string>
+
+    <string name="share_stats_top_subreddit_no_data">I\'ve just started using Reddit Explorer and it\'s Grrrrreat!!</string>
+    <string name="share_stats_top_subreddit">I\'m using Reddit Explorer and I\'ve discovered that my most read sub is %1$s</string>
+    <string name="share_stats_top_subreddit_subject">My favourite Subreddit on Reddit Explorer</string>
+    <string name="share_stats_chooser_title">Share stat via</string>
+    <string name="share_article_title">Check out reddit post \"%1$s\" (%2$s) - shared via reddit Explorer</string>
+    <string name="share_article_subject">Reddit Explorer - great post found</string>
+    <string name="share_article_chooser_title">Share article via</string>
+
+    <string name="domain_stub">https://reddit.com</string>
+
+    <string name="formatting_format_domain_with_brackets">(%1$s)</string>
+
+
 </resources>

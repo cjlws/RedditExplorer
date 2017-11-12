@@ -76,6 +76,21 @@
             </intent-filter>
             <meta-data android:name="android.content.SyncAdapter" android:resource="@xml/syncadapter"/>
         </service>
+
+        <receiver android:name=".TopThreeWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_top_three_info"
+                />
+        </receiver>
+
     </application>
+
+
+
+
 
 </manifest>

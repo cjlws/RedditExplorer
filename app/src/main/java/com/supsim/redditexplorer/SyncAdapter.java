@@ -10,11 +10,11 @@ import android.content.Context;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.supsim.redditexplorer.account.AccountGeneral;
 import com.supsim.redditexplorer.data.ActionedArticleContract;
-import com.supsim.redditexplorer.data.RedditArticle;
 import com.supsim.redditexplorer.data.RedditArticleContract;
 
 import org.json.JSONArray;
@@ -27,58 +27,56 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Vector;
 
 import javax.net.ssl.HttpsURLConnection;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
+
+
     private static final String TAG = "SyncAdapter";
     private ContentResolver mContentResolver;
     private static final String url = "https://www.reddit.com/.json";
 
-    public SyncAdapter(Context context, boolean autoInitialize){
+    SyncAdapter(Context context, boolean autoInitialize){
         super(context, autoInitialize);
         this.mContentResolver = context.getContentResolver();
     }
 
-    public SyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
-        super(context, autoInitialize, allowParallelSyncs);
-        this.mContentResolver = context.getContentResolver();
-    }
+//    public SyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
+//        super(context, autoInitialize, allowParallelSyncs);
+//        this.mContentResolver = context.getContentResolver();
+//    }
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority,
                               ContentProviderClient providerClient, SyncResult syncResult){
         Log.d(TAG, "On Perform Sync Ran");
 
-        ArrayList<String> alreadyActioned = new ArrayList<String>();
+        ArrayList<String> alreadyActioned = new ArrayList<>();
 
         Cursor actionedArticles = mContentResolver.query(
                 ActionedArticleContract.Actioned_Articles.CONTENT_URI,
                 null,
-                ActionedArticleContract.Actioned_Articles.COL_ACTIONED_TYPE + " = ?",
-                new String[]{ActionedArticleContract.Actioned_Articles.ACTIONED_TYPE_DELETED},
+//                ActionedArticleContract.Actioned_Articles.COL_ACTIONED_TYPE + " = ?",
+//                new String[]{ActionedArticleContract.Actioned_Articles.ACTIONED_TYPE_DELETED},  // Re-enable for easier testing
+                null,
+                null,
                 null);
 
-        Log.d("TESTING", " ----  Total number of actioned articles is: " + actionedArticles.getCount() + " -----");
 
-        //TODO Put in some safety here in case article has more than one record (it never should but hey-ho
+            if(actionedArticles != null) {
+                for (actionedArticles.moveToFirst(); !actionedArticles.isAfterLast(); actionedArticles.moveToNext()) {
+        alreadyActioned.add(actionedArticles.getString(1));
+            }
+            }
 
-        for(actionedArticles.moveToFirst(); !actionedArticles.isAfterLast(); actionedArticles.moveToNext()){
-            alreadyActioned.add(actionedArticles.getString(1));
-        }
-
-        actionedArticles.close();
+        if(actionedArticles != null && !actionedArticles.isClosed()) actionedArticles.close();
 
         Log.d("TESTING", " ----  Produced an Array of " + alreadyActioned.size() + " ---- ");
-        Log.d("TESTING", alreadyActioned.toString());
 
 
-
-        //TODO Move parsing out to own class
         try {
             String jsonFeed = download(url);
 
@@ -86,17 +84,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             JSONObject dataObject = jsonObject.getJSONObject("data");
             JSONArray children = dataObject.getJSONArray("children");
 
-            Vector<ContentValues> allVector = new Vector<ContentValues>(children.length());
+            Vector<ContentValues> allVector = new Vector<>(children.length());
 
             for(int i = 0; i < children.length(); i++){
                 JSONObject child = children.getJSONObject(i);
                 JSONObject article = child.getJSONObject("data");
 
-                //TODO change to opt with defaults
 
                 String id = article.getString("id");                    // The unique reddit ID
 
-                if(alreadyActioned.contains(id)){  //TODO Change to more efficient format
+                if(alreadyActioned.contains(id)){
                     Log.d("TESTING", "Article ID " + id + " has already been actioned so ignoring");
                 } else {
                     Log.d("TESTING", "Article ID " + id + " is a new article and therefore will be saved");
@@ -108,24 +105,37 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     String score = article.getString("score");              // Total score for the post
                     int nsfw = convertNSFW(article.getBoolean("over_18"));  // NSFW or not - converted to int to make storage easier
                     int num_comments = article.getInt("num_comments");      // Number of comments available
-                    long created = article.getLong("created_utc");          // Timestamp of the creation of the post
+                    int created = article.getInt("created_utc");          // Timestamp of the creation of the post
                     String author = article.getString("author");            // reddit username of the author
                     String thumbnail = article.optString("thumbnail", "");      // scaled thumbnail to accompany the link.  There are also _height and _width fields available
                     String permalink = article.getString("permalink");      // link to the reddit article page - relative link
 
-                    RedditArticle redditArticle = new RedditArticle(
-                            domain,
-                            subreddit,
-                            id,
-                            title,
-                            score,
-                            nsfw,
-                            num_comments,
-                            created,
-                            author,
-                            thumbnail,
-                            permalink);
-                    Log.d(TAG, i + " " + redditArticle.toString());
+
+                    String previews = "";
+                    JSONObject preview = article.optJSONObject("preview");
+                    if (preview != null) {
+                        JSONArray images = preview.optJSONArray("images");
+                        if (images != null) {
+
+                            JSONObject previewdata = images.getJSONObject(0);
+                            JSONArray resolutions = previewdata.optJSONArray("resolutions");
+                            previews = resolutions.toString();
+                        }
+                    }
+
+//                    RedditArticle redditArticle = new RedditArticle(
+//                            domain,
+//                            subreddit,
+//                            id,
+//                            title,
+//                            score,
+//                            nsfw,
+//                            num_comments,
+//                            created,
+//                            author,
+//                            thumbnail,
+//                            permalink,
+//                            previews);
 
                     ContentValues redditValues = new ContentValues();
                     redditValues.put(RedditArticleContract.Articles.COL_ID, id);
@@ -134,8 +144,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     redditValues.put(RedditArticleContract.Articles.COL_AUTHOR, author);
                     redditValues.put(RedditArticleContract.Articles.COL_PERMALINK, permalink);
                     redditValues.put(RedditArticleContract.Articles.COL_THUMBNAIL, thumbnail);
+                    redditValues.put(RedditArticleContract.Articles.COL_DOMAIN, domain);
+                    redditValues.put(RedditArticleContract.Articles.COL_COMMENTS, num_comments);
+                    redditValues.put(RedditArticleContract.Articles.COL_SCORE, score);
+                    redditValues.put(RedditArticleContract.Articles.COL_CREATED, created);
+                    redditValues.put(RedditArticleContract.Articles.COL_PREVIEWS, previews);
 
-                    allVector.add(redditValues);
+                    if (nsfw == 0) allVector.add(redditValues);
                 }
             }
 
@@ -148,10 +163,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             }
             
         } catch (IOException e){
-            //TODO Do something useful here!
+
             Log.e(TAG, "IO Exception" + e);
         } catch (JSONException e){
-            //TODO Do something useful
+
             Log.e(TAG, "JSON Error" + e);
         }
     }
@@ -164,7 +179,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    private String download(String address) throws IOException {
+    @NonNull
+    private String download(@NonNull String address) throws IOException {
         HttpsURLConnection connection = null;
         InputStream inputStream = null;
 
@@ -190,8 +206,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     public static void performSync(){
-        //TODO
-        Log.d(TAG, "Perform Sync was called");
         Bundle bundle = new Bundle();
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);

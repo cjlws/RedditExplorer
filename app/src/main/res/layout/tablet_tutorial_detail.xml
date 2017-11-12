@@ -1,17 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
-        android:id="@+id/mainTutorialText"
-        android:text="This is the tablet tutorial"
+        android:id="@+id/tabletTutorialHeadline"
+        android:text="@string/tutorial_tablet_headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tabletTutorialMainBody"
+        style="@style/TutorialTitle"
+        />
+
+    <TextView
+        android:id="@+id/tabletTutorialMainBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tutorial_tablet_body"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tabletTutorialHeadline"
+        app:layout_constraintBottom_toTopOf="@+id/tabletTutorialCallToAction"
+        android:paddingStart="48dp"
+        android:paddingEnd="48dp"
+        style="@style/TutorialBody"
+         />
+
+    <TextView
+        android:id="@+id/tabletTutorialCallToAction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tutorial_tablet_call_to_action"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tabletTutorialMainBody"
+        android:paddingBottom="16dp"
+        style="@style/TutorialBody"
+         />
 
 </android.support.constraint.ConstraintLayout>

@@ -1,90 +1,133 @@
-<RelativeLayout
-    android:id="@+id/item_detail"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.supsim.redditexplorer.ItemDetailFragment"
-    >
+    android:background="@color/tablet_list_holder_background">
+
     <LinearLayout
-        android:padding="8dp"
-        android:orientation="vertical"
         android:id="@+id/postHolderLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="#eee"
+        android:layout_marginEnd="@dimen/tablet_medium_detail_gutter"
+        android:layout_marginStart="@dimen/tablet_medium_detail_gutter"
+        style="@style/TabletDetailView.DetailBlock"
         >
+
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/tablet_detail_block_vertical_spacer"
+            android:layout_marginBottom="@dimen/tablet_detail_block_vertical_spacer">
+
+
             <TextView
                 android:id="@+id/postSubredditTextView"
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="r/Videos"/>
+                tools:text="r/Videos (youtube.com)"
+                android:paddingStart="@dimen/tablet_detail_block_horizontal_spacer"
+                android:paddingEnd="@dimen/tablet_detail_block_horizontal_spacer"/>
 
             <TextView
-                tools:text="youtube.com"
-                android:id="@+id/postDestinationDomainTextView"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
-            <TextView
-                tools:text="Posted 8hrs ago by TheBlogger"
                 android:id="@+id/postAuthorAndTimeStampTextView"
-                android:layout_weight="2"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="viewEnd"
+                tools:text="Posted 8hrs ago by TheBlogger"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:paddingStart="@dimen/tablet_detail_block_horizontal_spacer"
+                android:paddingEnd="@dimen/tablet_detail_block_horizontal_spacer"/>
 
 
         </LinearLayout>
+
         <LinearLayout
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/tablet_detail_block_vertical_spacer"
+            android:layout_marginBottom="@dimen/tablet_detail_block_vertical_spacer"
+            android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/postScoreTextView"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                tools:text="16.7k"
-                android:textSize="24sp"/>
-            <com.android.volley.toolbox.NetworkImageView
-                android:layout_weight="1"
-                android:id="@+id/postThumbnailImageView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:id="@+id/postMainLinkTextView"
-                tools:text="Main URL link"
-                android:layout_weight="6"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
-                android:textStyle="bold"/>
+                tools:text="16.7k"
+                android:paddingStart="@dimen/tablet_detail_block_horizontal_spacer"
+                android:paddingEnd="@dimen/tablet_detail_block_horizontal_spacer"
+                android:layout_gravity="center_vertical"/>
+
+            <com.android.volley.toolbox.NetworkImageView
+                android:id="@+id/postThumbnailImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="100dp"
+                android:layout_gravity="center_vertical"
+                 />
+
+            <TextView
+                android:id="@+id/postMainLinkTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:text="Main URL link"
+                android:paddingStart="@dimen/tablet_detail_block_horizontal_spacer"
+                android:paddingEnd="@dimen/tablet_detail_block_horizontal_spacer"
+                android:maxLines="4"
+                android:ellipsize="end"
+                android:layout_gravity="center_vertical"/>
         </LinearLayout>
 
-
     </LinearLayout>
-    <TextView
-        android:id="@+id/temp_textview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="Top 10 of 200 comments"
-        android:layout_below="@id/postHolderLinearLayout"
-        />
-    <ListView
-        android:layout_below="@id/temp_textview"
-        android:id="@+id/comment_holder_listView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-    </ListView>
-</RelativeLayout>
 
-    <!--This layout appears embedded in the detail layout.  SO on a phone it is beneath the title and on a tablet it is on its own-->
-    <!--Going to need two quite seperate ones methinks-->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/postHolderLinearLayout"
+        android:layout_marginEnd="@dimen/tablet_large_detail_gutter"
+        android:layout_marginStart="@dimen/tablet_large_detail_gutter"
+        style="@style/TabletDetailView.CommentBlock"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/selfTextHolder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Self Text Goes Here..."
+                android:layout_marginEnd="@dimen/text_margin"
+                android:layout_marginStart="@dimen/text_margin"
+                android:paddingTop="@dimen/text_margin"/>
+
+            <TextView
+                android:id="@+id/temp_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Top 10 of 200 comments"
+                android:layout_marginStart="@dimen/text_margin"
+                android:layout_marginEnd="@dimen/text_margin"
+                android:paddingBottom="@dimen/text_margin"/>
+
+            <com.supsim.redditexplorer.Views.ListViewWithoutScroll
+                android:id="@+id/comment_holder_listView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/text_margin"
+                android:layout_marginStart="@dimen/text_margin"
+                />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

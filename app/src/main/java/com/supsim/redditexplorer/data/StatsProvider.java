@@ -8,9 +8,9 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.util.Log;
+import android.support.annotation.NonNull;
 
-import java.util.ArrayList;
+import com.supsim.redditexplorer.TopThreeWidgetProvider;
 
 public class StatsProvider extends ContentProvider {
 
@@ -33,7 +33,7 @@ public class StatsProvider extends ContentProvider {
     }
 
     @Override
-    public String getType(Uri uri){
+    public String getType(@NonNull Uri uri){
         switch (uriMatcher.match(uri)){
             case STAT:
                 return StatsRecordContract.Stats.CONTENT_TYPE;
@@ -45,7 +45,7 @@ public class StatsProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder){
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder){
 
         Cursor cursor;
         switch (uriMatcher.match(uri)){
@@ -68,17 +68,17 @@ public class StatsProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
+
             default:
                 throw new IllegalArgumentException("Uri was invalid");
         }
 
         assert getContext() != null;
         return cursor;
-//        return null;
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues values){
+    public Uri insert(@NonNull Uri uri, ContentValues values){
 
         Uri returnUri;
         long _id;
@@ -94,11 +94,13 @@ public class StatsProvider extends ContentProvider {
 
         assert getContext() != null;
 
+        TopThreeWidgetProvider.sendRefreshBroadcast(getContext());
+
         return returnUri;
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs){
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs){
 
         int rows;
         switch (uriMatcher.match(uri)){
@@ -110,12 +112,13 @@ public class StatsProvider extends ContentProvider {
         }
         if (rows !=0){
             assert getContext() != null;
+            TopThreeWidgetProvider.sendRefreshBroadcast(getContext());
         }
         return rows;
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs){
+    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs){
 
         int rows;
         switch (uriMatcher.match(uri)){
@@ -127,9 +130,11 @@ public class StatsProvider extends ContentProvider {
         }
         if (rows !=0){
             assert getContext() != null;
+            TopThreeWidgetProvider.sendRefreshBroadcast(getContext());
         }
         return rows;
     }
+
 
 
 }

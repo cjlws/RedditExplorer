@@ -56,7 +56,8 @@ public class DatabaseClient extends SQLiteOpenHelper {
                 RedditArticleContract.Articles.COL_CREATED + "] NUMBER, [" +
                 RedditArticleContract.Articles.COL_AUTHOR + "] TEXT, [" +
                 RedditArticleContract.Articles.COL_THUMBNAIL + "] TEXT, [" +
-                RedditArticleContract.Articles.COL_PERMALINK + "] TEXT);"
+                RedditArticleContract.Articles.COL_PERMALINK + "] TEXT, [" +
+                RedditArticleContract.Articles.COL_PREVIEWS + "] TEXT);"
         );
     }
 }

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import static com.supsim.redditexplorer.data.StatsRecordContract.STAT_DB_NAME;
 import static com.supsim.redditexplorer.data.StatsRecordContract.STAT_DB_VERSION;
 
-public class StatsDatabaseClient extends SQLiteOpenHelper {
+class StatsDatabaseClient extends SQLiteOpenHelper {
 
     private static volatile StatsDatabaseClient instance;
     private final SQLiteDatabase database;

@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/comments_block_vertical_spacing"
+    android:layout_marginTop="@dimen/comments_block_vertical_spacing">
 
     <TextView
         android:id="@+id/subcomment_author"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        tools:text="author"/>
     <TextView
         android:id="@+id/subcomment_body"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        tools:text="comment"
+        android:layout_marginTop="@dimen/comments_block_vertical_spacing"
+        />
 
 </LinearLayout>

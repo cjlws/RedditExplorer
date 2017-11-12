@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/TableRow.Header"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <TextView
+        android:id="@+id/stats_table_row_rank"
+        tools:text="1"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        style="@style/TableRow.Text.Header"/>
+    <TextView
+        android:id="@+id/stats_table_row_subreddit"
+        tools:text="Subreddit"
+        android:layout_weight="5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        style="@style/TableRow.Text.Header"/>
+    <TextView
+        android:id="@+id/stats_table_row_views"
+        tools:text="56"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        style="@style/TableRow.Text.Header"/>
+</LinearLayout>

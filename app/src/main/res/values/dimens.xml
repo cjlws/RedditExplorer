@@ -4,4 +4,17 @@
     <dimen name="app_bar_height">200dp</dimen>
     <dimen name="item_width">300dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="max_list_thumbnail_width">100dp</dimen>
+    <dimen name="small_vertical_spacing">8dp</dimen>
+    <dimen name="small_horizontal_spacing">8dp</dimen>
+
+    <dimen name="tablet_medium_detail_gutter">32dp</dimen>
+    <dimen name="tablet_detail_block_lift">8dp</dimen>
+    <dimen name="tablet_detail_block_horizontal_spacer">16dp</dimen>
+    <dimen name="tablet_detail_block_vertical_spacer">8dp</dimen>
+    <dimen name="tablet_large_detail_gutter">48dp</dimen>
+    <dimen name="tablet_comment_block_lift">4dp</dimen>
+
+    <dimen name="comments_block_horizontal_spacing">16dp</dimen>
+    <dimen name="comments_block_vertical_spacing">8dp</dimen>
 </resources>

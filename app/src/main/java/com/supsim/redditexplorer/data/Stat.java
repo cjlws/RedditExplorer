@@ -1,15 +1,14 @@
 package com.supsim.redditexplorer.data;
 
 
+import com.github.mikephil.charting.data.PieEntry;
+
 public class Stat {
 
     private int rank;
     private String subreddit;
     private int numberOfViews;
 
-    public Stat(){
-        // Empty Constructor
-    }
 
     public Stat(int rank, String subreddit, int numberOfViews){
         this.rank = rank;
@@ -32,5 +31,9 @@ public class Stat {
     @Override
     public String toString(){
         return "Sub: " + this.subreddit + ", Views: " + this.numberOfViews + ", Rank: " + this.rank;
+    }
+
+    public PieEntry getPieEntry(){
+        return new PieEntry((float)this.numberOfViews, this.subreddit);
     }
 }

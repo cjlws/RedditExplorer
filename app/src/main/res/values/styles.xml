@@ -17,4 +17,137 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="PhoneTitleLink" parent="TextAppearance.AppCompat.Large">
+
+    </style>
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+        <item name="android:layout_marginTop">@dimen/small_vertical_spacing</item>
+        <item name="android:layout_marginBottom">@dimen/small_vertical_spacing</item>
+    </style>
+
+    <style name="TabletListText" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="TabletListText.Subreddit" parent="TabletListText">
+        <item name="android:alpha">0.7</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="TabletListText.Author" parent="TabletListText.Subreddit">
+        <item name="android:textStyle">italic</item>
+    </style>
+
+
+    <style name="TableRow">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingTop">@dimen/small_vertical_spacing</item>
+        <item name="android:paddingBottom">@dimen/small_vertical_spacing</item>
+    </style>
+
+    <style name="TableRow.Header" parent="TableRow">
+        <item name="android:background">@color/tableRowHeader</item>
+
+    </style>
+
+    <style name="TableRow.Odd" parent="TableRow">
+        <item name="android:background">@color/tableRowOdd</item>
+    </style>
+
+    <style name="TableRow.Even" parent="TableRow">
+        <item name="android:background">@color/tableRowEven</item>
+    </style>
+
+    <style name="TableRow.Text" parent="@android:style/TextAppearance.Medium">
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="TableRow.Text.Header" parent="TableRow.Text">
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/tableRowHeaderTextColor</item>
+        <item name="android:alpha">0.8</item>
+    </style>
+
+    <style name="TopThreeWidget">
+
+    </style>
+
+    <style name="TopThreeWidget.Spacer">
+
+    </style>
+
+    <style name="TopThreeWidget.Row">
+        <item name="android:layout_marginStart">@dimen/small_horizontal_spacing</item>
+        <item name="android:layout_marginEnd">@dimen/small_horizontal_spacing</item>
+    </style>
+
+    <style name="TopThreeWidget.RowText">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorAccent</item>
+
+    </style>
+
+    <style name="TopThreeWidget.Rank" parent="TopThreeWidget.RowText">
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:paddingTop">@dimen/small_vertical_spacing</item>
+    </style>
+
+    <style name="TopThreeWidget.Subreddit" parent="TopThreeWidget.RowText">
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:paddingStart">@dimen/small_horizontal_spacing</item>
+        <item name="android:paddingEnd">@dimen/small_horizontal_spacing</item>
+    </style>
+
+    <style name="TopThreeWidget.Views" parent="TopThreeWidget.RowText">
+        <item name="android:textAlignment">viewEnd</item>
+    </style>
+
+    <style name="GeneralErrorText">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TutorialTitle" parent="Base.TextAppearance.AppCompat.Headline">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="TutorialBody" parent="Base.TextAppearance.AppCompat.Medium">
+    </style>
+
+    <style name="TabletDetailView"/>
+    <style name="TabletDetailView.DetailBlock" parent="TabletDetailView">
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">@color/tablet_detail_block_background</item>
+    </style>
+    <style name="TabletDetailView.CommentBlock" parent="TabletDetailView">
+        <item name="android:background">@color/tablet_list_card_background</item>
+    </style>
+
+    <style name="CommentBlock">
+        <item name="android:layout_marginStart">@dimen/comments_block_horizontal_spacing</item>
+        <item name="android:layout_marginEnd">@dimen/comments_block_horizontal_spacing</item>
+        <item name="android:layout_marginTop">@dimen/comments_block_vertical_spacing</item>
+        <item name="android:layout_marginBottom">@dimen/comments_block_vertical_spacing</item>
+    </style>
+
+    <style name="CommentBlockText" parent="Base.TextAppearance.AppCompat.Small">
+        <item name="android:paddingTop">@dimen/comments_block_vertical_spacing</item>
+        <item name="android:paddingBottom">@dimen/comments_block_vertical_spacing</item>
+    </style>
+    <style name="CommentBlockTextAuthor" parent="CommentBlockText">
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

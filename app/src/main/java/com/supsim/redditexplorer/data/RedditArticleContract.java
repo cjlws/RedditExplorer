@@ -9,7 +9,7 @@ public class RedditArticleContract {
     public static final String PATH_ARTICLES = "articles";
 
     static final String DB_NAME = "articles_db";
-    static final int DB_VERSION = 2;
+    static final int DB_VERSION = 3;
 
     public static abstract class Articles {
         public static final String NAME = "articles";
@@ -24,6 +24,7 @@ public class RedditArticleContract {
         public static final String COL_AUTHOR = "articleAuthor";
         public static final String COL_THUMBNAIL = "articleThumbnail";
         public static final String COL_PERMALINK = "articlePermalink";
+        public static final String COL_PREVIEWS = "articlePreviews";
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_ARTICLES).build();
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/" + CONTENT_URI + "/" + PATH_ARTICLES;

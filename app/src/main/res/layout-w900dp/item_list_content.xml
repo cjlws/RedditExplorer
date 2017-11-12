@@ -1,47 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ItemListActivity">
+    tools:context=".ItemListActivity"
+    android:background="@color/tablet_list_card_background"
+    >
+
+
+
+
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_margin="@dimen/text_margin">
+
         <TextView
             android:id="@+id/subreddittextview"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceListItem"
             android:textAlignment="viewStart"
+            style="@style/TabletListText.Subreddit"
             tools:text="Sub"/>
         <TextView
             android:id="@+id/authortextview"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceListItem"
             android:textAlignment="viewEnd"
             tools:text="Author"
-            android:minLines="1"
-            android:maxLines="1"
-            android:ellipsize="marquee"/>
+            style="@style/TabletListText.Author"/>
     </LinearLayout>
 
     <TextView
         android:id="@+id/titletextview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:minLines="1"
+        android:layout_marginBottom="@dimen/text_margin"
+        android:layout_marginStart="@dimen/text_margin"
+        android:layout_marginEnd="@dimen/text_margin"
         android:maxLines="2"
-        android:ellipsize="end"
+        style="@style/TabletListText"
         tools:text="The quick brown fox jumps over the lazy dog"
         />
 

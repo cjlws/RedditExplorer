@@ -1,16 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="@layout/content_stats">
+    tools:showIn="@layout/content_stats"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/empty_stats_table_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/error_no_data_for_table"
+        android:layout_gravity="center"
+        style="@style/GeneralErrorText"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        />
 
-    <com.supsim.redditexplorer.Views.StatsTable
-        android:id="@+id/stats_table_row_holder"
-        android:orientation="horizontal"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
-    </com.supsim.redditexplorer.Views.StatsTable>
-</LinearLayout>
+
+
+        <com.supsim.redditexplorer.Views.StatsTable
+            android:id="@+id/stats_table_row_holder"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </com.supsim.redditexplorer.Views.StatsTable>
+    </ScrollView>
+
+
+</FrameLayout>

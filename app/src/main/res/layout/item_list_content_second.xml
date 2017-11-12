@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ItemListActivity"
+    android:padding="16dp"
+    android:background="#fff"
     >
     <TextView
-        android:text=" \\/  MORE ARTICLES  \\/"
-        android:textSize="12sp"
-        android:textColor="#000"
-        android:background="#ccc"
-        android:padding="3sp"
-        android:textAlignment="center"
-        android:textStyle="bold"
-        android:layout_width="match_parent"
+        android:text="Up next..."
+        android:textStyle="italic"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <LinearLayout
 
@@ -31,7 +29,8 @@
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceListItem"
             android:textAlignment="viewStart"
-            tools:text="Sub"/>
+            tools:text="r/subreddit"
+            android:alpha=".7"/>
         <TextView
             android:id="@+id/authortextview"
             android:layout_width="0dp"
@@ -39,24 +38,24 @@
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceListItem"
             android:textAlignment="viewEnd"
-            tools:text="Author"
-            android:minLines="1"
+            tools:text="username"
             android:maxLines="1"
-            android:ellipsize="marquee"/>
+            android:ellipsize="middle"
+            android:alpha=".7"
+            android:textStyle="italic"/>
     </LinearLayout>
 
     <TextView
         android:id="@+id/titletextview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
+        android:layout_marginTop="8dp"
         android:textAppearance="?attr/textAppearanceListItem"
-        android:minLines="1"
         android:maxLines="2"
         android:ellipsize="end"
-        tools:text="The quick brown fox jumps over the lazy dog"
-        android:textStyle="italic"
+        tools:text="@string/testing_lorem_ipsum"
         />
 
 
 </LinearLayout>
+

@@ -2,5 +2,14 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#FF5700</color>
+
+    <color name="tableRowHeader">@color/cardview_dark_background</color>
+    <color name="tableRowHeaderTextColor">#fff</color>
+    <color name="tableRowOdd">#fff</color>
+    <color name="tableRowEven">#eee</color>
+
+    <color name="tablet_list_card_background">@color/cardview_light_background</color>
+    <color name="tablet_list_holder_background">#aaa</color>
+    <color name="tablet_detail_block_background">#eee</color>
 </resources>

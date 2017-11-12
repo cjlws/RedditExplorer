@@ -9,7 +9,7 @@ import static com.supsim.redditexplorer.data.ActionedArticleContract.ACTIONED_AR
 import static com.supsim.redditexplorer.data.ActionedArticleContract.ACTIONED_ARTICLES_DB_VERSION;
 
 
-public class ActionedArticleDatabaseClient extends SQLiteOpenHelper {
+class ActionedArticleDatabaseClient extends SQLiteOpenHelper {
 
     private static volatile ActionedArticleDatabaseClient instance;
     private final SQLiteDatabase database;
