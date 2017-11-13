@@ -12,23 +12,23 @@ import com.supsim.redditexplorer.data.RedditArticleContract;
 
 public class AccountGeneral {
 
-    private static final String ACCOUNT_TYPE ="com.supsim.syncaccount";
+    private static final String ACCOUNT_TYPE = "com.supsim.syncaccount";
     private static final String ACCOUNT_NAME = "Test Account";
 
-    public static Account getAccount(){
+    public static Account getAccount() {
         return new Account(ACCOUNT_NAME, ACCOUNT_TYPE);
     }
 
-    public static void createSyncAccount(Context context){
+    public static void createSyncAccount(Context context) {
         boolean created = false;
 
         Account account = getAccount();
-        AccountManager manager = (AccountManager)context.getSystemService(Context.ACCOUNT_SERVICE);
+        AccountManager manager = (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
 
-        if(manager.addAccountExplicitly(account, null, null)){
+        if (manager.addAccountExplicitly(account, null, null)) {
             final String AUTHORITY = RedditArticleContract.CONTENT_AUTHORITY;
             final long SYNC_FREQUENCY = 30 * 60;  // Every thirty minutes
-                            // good for testing but might want to reduce in the real world
+            // good for testing but might want to reduce in the real world
 
             ContentResolver.setIsSyncable(account, AUTHORITY, 1);
             ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
@@ -37,7 +37,7 @@ public class AccountGeneral {
             created = true;
         }
 
-        if (created){
+        if (created) {
             SyncAdapter.performSync();
         }
     }

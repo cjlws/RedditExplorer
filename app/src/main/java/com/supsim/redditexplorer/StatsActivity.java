@@ -29,7 +29,7 @@ public class StatsActivity extends AppCompatActivity {
     FloatingActionButton floatingActionButton;
     public static final String FROM_WIDGET_KEY = "from_widget";
 
-    private void setupViewPager(ViewPager viewPager){
+    private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new StatsChartFragment(), "Chart");
         adapter.addFragment(new StatsTableFragment(), "Table");
@@ -40,27 +40,27 @@ public class StatsActivity extends AppCompatActivity {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
-        ViewPagerAdapter(FragmentManager manager){
+        ViewPagerAdapter(FragmentManager manager) {
             super(manager);
         }
 
         @Override
-        public Fragment getItem(int position){
+        public Fragment getItem(int position) {
             return mFragmentList.get(position);
         }
 
         @Override
-        public int getCount(){
+        public int getCount() {
             return mFragmentList.size();
         }
 
-        void addFragment(Fragment fragment, String title){
+        void addFragment(Fragment fragment, String title) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
         }
 
         @Override
-        public CharSequence getPageTitle(int position){
+        public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
     }
@@ -72,7 +72,7 @@ public class StatsActivity extends AppCompatActivity {
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         Bundle passedIn = getIntent().getExtras();
-        if(passedIn != null && passedIn.containsKey(FROM_WIDGET_KEY) && passedIn.getBoolean(FROM_WIDGET_KEY)){
+        if (passedIn != null && passedIn.containsKey(FROM_WIDGET_KEY) && passedIn.getBoolean(FROM_WIDGET_KEY)) {
 
             // Log when a user clicks on the widget to lauch stats
             Bundle firebaseBundle = new Bundle();
@@ -107,13 +107,13 @@ public class StatsActivity extends AppCompatActivity {
 
     }
 
-    private void updateFragments(){
+    private void updateFragments() {
 
         ArrayList<Stat> allStats = getAllStats();
 
-        ViewPager viewPager = (ViewPager)findViewById(R.id.viewPager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
 
-        if(viewPager == null){
+        if (viewPager == null) {
 
             //For tablets
             StatsTableFragment tableFragment = new StatsTableFragment();
@@ -129,31 +129,29 @@ public class StatsActivity extends AppCompatActivity {
             //For phones
             setupViewPager(viewPager);
 
-            TabLayout tabLayout = (TabLayout)findViewById(R.id.tabs);
+            TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
             tabLayout.setupWithViewPager(viewPager);
         }
 
 
-
-        if(allStats.isEmpty()){
+        if (allStats.isEmpty()) {
             configureFabButton(null);
         } else {
             configureFabButton(getTopStat(allStats).getSubreddit());
         }
 
 
-
     }
 
-    private Stat getTopStat(ArrayList<Stat> allStats){
+    private Stat getTopStat(ArrayList<Stat> allStats) {
         return allStats.get(0);
     }
 
-    private void configureFabButton(String topSubreddit){
+    private void configureFabButton(String topSubreddit) {
         final String textToDisplay;
         floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
 
-        if(topSubreddit != null){
+        if (topSubreddit != null) {
             textToDisplay = getString(R.string.share_stats_top_subreddit,
                     Tools.addRToSubreddit(topSubreddit));
         } else {
@@ -161,13 +159,12 @@ public class StatsActivity extends AppCompatActivity {
         }
 
 
-
         floatingActionButton.setOnClickListener(Tools.getShareOnClickListener(
-                        StatsActivity.this,
-                        getString(R.string.share_stats_top_subreddit_subject),
-                        textToDisplay,
-                        getString(R.string.share_stats_chooser_title)
-                ));
+                StatsActivity.this,
+                getString(R.string.share_stats_top_subreddit_subject),
+                textToDisplay,
+                getString(R.string.share_stats_chooser_title)
+        ));
 
     }
 
@@ -180,7 +177,7 @@ public class StatsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_clear_all_stats:
                 deleteAllStats();
                 return true;
@@ -197,7 +194,7 @@ public class StatsActivity extends AppCompatActivity {
 
         int rows = getApplicationContext().getContentResolver().delete(StatsRecordContract.Stats.CONTENT_URI, null, null);
 
-        if(rows > 0) {
+        if (rows > 0) {
             Toast.makeText(getApplicationContext(), getString(R.string.stats_action_confirmation_delete_all, rows), Toast.LENGTH_LONG).show();
             updateFragments();
         } else {

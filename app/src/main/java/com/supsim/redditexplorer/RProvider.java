@@ -19,6 +19,7 @@ public class RProvider extends ContentProvider {
     private static final int ARTICLE_ID = 2;
 
     private static final UriMatcher uriMatcher;
+
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(RedditArticleContract.CONTENT_AUTHORITY, RedditArticleContract.PATH_ARTICLES, ARTICLE);
@@ -28,14 +29,14 @@ public class RProvider extends ContentProvider {
     private SQLiteDatabase database;
 
     @Override
-    public boolean onCreate(){
+    public boolean onCreate() {
         this.database = DatabaseClient.getInstance(getContext()).getDatabase();
         return true;
     }
 
     @Override
-    public String getType(@NonNull Uri uri){
-        switch (uriMatcher.match(uri)){
+    public String getType(@NonNull Uri uri) {
+        switch (uriMatcher.match(uri)) {
             case ARTICLE:
                 return RedditArticleContract.Articles.CONTENT_TYPE;
             case ARTICLE_ID:
@@ -49,7 +50,7 @@ public class RProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
         Cursor cursor;
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case ARTICLE:
                 cursor = database.query(RedditArticleContract.Articles.NAME,
                         projection,
@@ -64,7 +65,7 @@ public class RProvider extends ContentProvider {
                 cursor = database.query(RedditArticleContract.Articles.NAME,
                         projection,
                         RedditArticleContract.Articles.COL_ID + "=?",
-                        new String[] {String.valueOf(_id)},
+                        new String[]{String.valueOf(_id)},
                         null,
                         null,
                         sortOrder);
@@ -79,11 +80,11 @@ public class RProvider extends ContentProvider {
     }
 
     @Override
-    public Uri insert(@NonNull Uri uri, ContentValues values){
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
         Uri returnUri;
         long _id;
 
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case ARTICLE:
                 _id = database.insert(RedditArticleContract.Articles.NAME, null, values);
                 returnUri = ContentUris.withAppendedId(RedditArticleContract.Articles.CONTENT_URI, _id);
@@ -98,16 +99,16 @@ public class RProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs){
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         int rows;
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case ARTICLE:
                 rows = database.delete(RedditArticleContract.Articles.NAME, selection, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("URI was invalid");
         }
-        if (rows != 0){
+        if (rows != 0) {
             assert getContext() != null;
             getContext().getContentResolver().notifyChange(uri, null);
         }
@@ -116,9 +117,9 @@ public class RProvider extends ContentProvider {
 
 
     @Override
-    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs){
+    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int rows;
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case ARTICLE:
                 rows = database.update(RedditArticleContract.Articles.NAME, values, selection, selectionArgs);
                 break;
@@ -126,7 +127,7 @@ public class RProvider extends ContentProvider {
                 throw new IllegalArgumentException("URI was invalid");
 
         }
-        if (rows != 0){
+        if (rows != 0) {
             assert getContext() != null;
             getContext().getContentResolver().notifyChange(uri, null);
         }

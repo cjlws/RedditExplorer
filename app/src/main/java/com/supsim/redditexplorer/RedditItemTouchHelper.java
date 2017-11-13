@@ -8,18 +8,18 @@ class RedditItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     private RedditItemTouchHelperListener listener;
 
-    RedditItemTouchHelper(int dragDirs, int swipeDirs, RedditItemTouchHelperListener listener){
+    RedditItemTouchHelper(int dragDirs, int swipeDirs, RedditItemTouchHelperListener listener) {
         super(dragDirs, swipeDirs);
         this.listener = listener;
     }
 
     @Override
-    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target){
+    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
         return true;
     }
 
     @Override
-    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction){
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         listener.onSwiped(viewHolder, direction, viewHolder.getAdapterPosition());
     }
 

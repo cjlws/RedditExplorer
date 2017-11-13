@@ -5,11 +5,9 @@
     <item
         android:id="@+id/action_view_stats"
         android:title="@string/menu_action_view_stats"
-        app:showAsAction="ifRoom"
-        />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_refresh_articles"
         android:title="@string/menu_action_refresh"
-        app:showAsAction="never"
-        />
+        app:showAsAction="never" />
 </menu>

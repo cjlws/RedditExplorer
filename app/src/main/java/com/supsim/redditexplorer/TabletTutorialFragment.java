@@ -18,12 +18,12 @@ public class TabletTutorialFragment extends Fragment {
     TextView callToAction;
     Handler handler;
 
-    public TabletTutorialFragment(){
-
-    }
+//    public TabletTutorialFragment(){
+//
+//    }
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
@@ -34,34 +34,34 @@ public class TabletTutorialFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState){
+                             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tablet_tutorial_detail, container, false);
 
-        callToAction = (TextView)rootView.findViewById(R.id.tabletTutorialCallToAction);
+        callToAction = (TextView) rootView.findViewById(R.id.tabletTutorialCallToAction);
         return rootView;
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState){
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if(keepWiggling) handler.postDelayed(runnable, 3000);
+        if (keepWiggling) handler.postDelayed(runnable, 3000);
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         keepWiggling = true;
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         keepWiggling = false;
     }
 
-    private void triggerWiggle(){
-        if(callToAction != null) {
+    private void triggerWiggle() {
+        if (callToAction != null) {
             callToAction.startAnimation(wiggle);
         }
     }
@@ -70,7 +70,7 @@ public class TabletTutorialFragment extends Fragment {
         @Override
         public void run() {
             triggerWiggle();
-            if(keepWiggling) handler.postDelayed(runnable, 4000);
+            if (keepWiggling) handler.postDelayed(runnable, 4000);
         }
     };
 }

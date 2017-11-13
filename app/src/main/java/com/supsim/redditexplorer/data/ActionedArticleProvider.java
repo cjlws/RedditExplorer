@@ -16,6 +16,7 @@ public class ActionedArticleProvider extends ContentProvider {
     private static final int ARTICLE_ID = 2;
 
     private static final UriMatcher uriMatcher;
+
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(ActionedArticleContract.CONTENT_AUTHORITY, ActionedArticleContract.PATH_ACTIONED_ARTICLES, ARTICLE);
@@ -25,14 +26,14 @@ public class ActionedArticleProvider extends ContentProvider {
     private SQLiteDatabase database;
 
     @Override
-    public boolean onCreate(){
+    public boolean onCreate() {
         this.database = ActionedArticleDatabaseClient.getInstance(getContext()).getDatabase();
         return true;
     }
 
     @Override
-    public String getType(@NonNull Uri uri){
-        switch (uriMatcher.match(uri)){
+    public String getType(@NonNull Uri uri) {
+        switch (uriMatcher.match(uri)) {
             case ARTICLE:
                 return ActionedArticleContract.Actioned_Articles.CONTENT_TYPE;
             case ARTICLE_ID:
@@ -43,10 +44,10 @@ public class ActionedArticleProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder){
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 
         Cursor cursor;
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case ARTICLE:
                 cursor = database.query(ActionedArticleContract.Actioned_Articles.NAME,
                         projection,
@@ -74,12 +75,12 @@ public class ActionedArticleProvider extends ContentProvider {
     }
 
     @Override
-    public Uri insert(@NonNull Uri uri, ContentValues values){
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
 
         Uri returnUri;
         long _id;
 
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case ARTICLE:
                 _id = database.insert(ActionedArticleContract.Actioned_Articles.NAME, null, values);
                 returnUri = ContentUris.withAppendedId(ActionedArticleContract.Actioned_Articles.CONTENT_URI, _id);
@@ -94,9 +95,9 @@ public class ActionedArticleProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs){
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         int rows;
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case ARTICLE:
                 rows = database.delete(ActionedArticleContract.Actioned_Articles.NAME, selection, selectionArgs);
                 break;
@@ -107,7 +108,7 @@ public class ActionedArticleProvider extends ContentProvider {
     }
 
     @Override
-    public int update(@NonNull Uri uri, ContentValues contentValues, String selection, String[] selectionArgs){
+    public int update(@NonNull Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
         return 0;  //Update should never be needed
     }
 

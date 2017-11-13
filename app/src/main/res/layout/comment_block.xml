@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="horizontal"
+<LinearLayout android:orientation="horizontal"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/CommentBlock"
-    >
+    style="@style/CommentBlock">
+
     <TextView
         android:id="@+id/comment_number_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="1.1K"
-        android:paddingTop="@dimen/comments_block_vertical_spacing"
-        />
+        android:paddingTop="@dimen/comments_block_vertical_spacing" />
+
     <LinearLayout
         android:layout_weight="1"
         android:layout_width="0dp"
@@ -21,20 +20,20 @@
         android:orientation="vertical"
         android:paddingStart="@dimen/comments_block_horizontal_spacing"
         android:paddingEnd="0dp">
+
         <TextView
             android:id="@+id/comment_author_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="Joe Bloggs"
-            style="@style/CommentBlockTextAuthor"
-            />
+            style="@style/CommentBlockTextAuthor" />
+
         <TextView
             android:id="@+id/comment_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="Blah, blah, blah"
-            style="@style/CommentBlockText"
-            />
+            style="@style/CommentBlockText" />
     </LinearLayout>
 
 </LinearLayout>

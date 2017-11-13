@@ -34,12 +34,11 @@ import javax.net.ssl.HttpsURLConnection;
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 
-
     private static final String TAG = "SyncAdapter";
     private ContentResolver mContentResolver;
     private static final String url = "https://www.reddit.com/.json";
 
-    SyncAdapter(Context context, boolean autoInitialize){
+    SyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
         this.mContentResolver = context.getContentResolver();
     }
@@ -51,7 +50,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority,
-                              ContentProviderClient providerClient, SyncResult syncResult){
+                              ContentProviderClient providerClient, SyncResult syncResult) {
         Log.d(TAG, "On Perform Sync Ran");
 
         ArrayList<String> alreadyActioned = new ArrayList<>();
@@ -66,13 +65,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 null);
 
 
-            if(actionedArticles != null) {
-                for (actionedArticles.moveToFirst(); !actionedArticles.isAfterLast(); actionedArticles.moveToNext()) {
-        alreadyActioned.add(actionedArticles.getString(1));
+        if (actionedArticles != null) {
+            for (actionedArticles.moveToFirst(); !actionedArticles.isAfterLast(); actionedArticles.moveToNext()) {
+                alreadyActioned.add(actionedArticles.getString(1));
             }
-            }
+        }
 
-        if(actionedArticles != null && !actionedArticles.isClosed()) actionedArticles.close();
+        if (actionedArticles != null && !actionedArticles.isClosed()) actionedArticles.close();
 
         Log.d("TESTING", " ----  Produced an Array of " + alreadyActioned.size() + " ---- ");
 
@@ -86,14 +85,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
             Vector<ContentValues> allVector = new Vector<>(children.length());
 
-            for(int i = 0; i < children.length(); i++){
+            for (int i = 0; i < children.length(); i++) {
                 JSONObject child = children.getJSONObject(i);
                 JSONObject article = child.getJSONObject("data");
 
 
                 String id = article.getString("id");                    // The unique reddit ID
 
-                if(alreadyActioned.contains(id)){
+                if (alreadyActioned.contains(id)) {
                     Log.d("TESTING", "Article ID " + id + " has already been actioned so ignoring");
                 } else {
                     Log.d("TESTING", "Article ID " + id + " is a new article and therefore will be saved");
@@ -154,25 +153,25 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 }
             }
 
-            if(allVector.size() > 0){
+            if (allVector.size() > 0) {
                 ContentValues[] contentValuesArray = new ContentValues[allVector.size()];
                 allVector.toArray(contentValuesArray);
                 mContentResolver.delete(RedditArticleContract.Articles.CONTENT_URI, null, null);
                 mContentResolver.bulkInsert(RedditArticleContract.Articles.CONTENT_URI, contentValuesArray);
                 mContentResolver.notifyChange(RedditArticleContract.Articles.CONTENT_URI, null, false);
             }
-            
-        } catch (IOException e){
+
+        } catch (IOException e) {
 
             Log.e(TAG, "IO Exception" + e);
-        } catch (JSONException e){
+        } catch (JSONException e) {
 
             Log.e(TAG, "JSON Error" + e);
         }
     }
 
-    private int convertNSFW(boolean nsfw){
-        if(nsfw){
+    private int convertNSFW(boolean nsfw) {
+        if (nsfw) {
             return 1;
         } else {
             return 0;
@@ -186,7 +185,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             URL server = new URL(address);
-            connection = (HttpsURLConnection)server.openConnection();
+            connection = (HttpsURLConnection) server.openConnection();
             connection.connect();
 
             int status = connection.getResponseCode();
@@ -194,18 +193,22 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             StringBuilder stringBuilder = new StringBuilder();
-            for (String temp; ((temp = bufferedReader.readLine()) != null);){
+            for (String temp; ((temp = bufferedReader.readLine()) != null); ) {
                 stringBuilder.append(temp);
             }
             return stringBuilder.toString();
 
         } finally {
-            if (inputStream != null) {inputStream.close();}
-            if (connection != null) {connection.disconnect();}
+            if (inputStream != null) {
+                inputStream.close();
+            }
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
     }
 
-    public static void performSync(){
+    public static void performSync() {
         Bundle bundle = new Bundle();
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);

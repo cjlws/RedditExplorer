@@ -10,30 +10,30 @@ public class Stat {
     private int numberOfViews;
 
 
-    public Stat(int rank, String subreddit, int numberOfViews){
+    public Stat(int rank, String subreddit, int numberOfViews) {
         this.rank = rank;
         this.subreddit = subreddit;
         this.numberOfViews = numberOfViews;
     }
 
-    public int getRank(){
+    public int getRank() {
         return this.rank;
     }
 
-    public String getSubreddit(){
+    public String getSubreddit() {
         return this.subreddit;
     }
 
-    public int getNumberOfViews(){
+    public int getNumberOfViews() {
         return this.numberOfViews;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Sub: " + this.subreddit + ", Views: " + this.numberOfViews + ", Rank: " + this.rank;
     }
 
-    public PieEntry getPieEntry(){
-        return new PieEntry((float)this.numberOfViews, this.subreddit);
+    public PieEntry getPieEntry() {
+        return new PieEntry((float) this.numberOfViews, this.subreddit);
     }
 }

@@ -31,7 +31,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                 R.string.share_article_title,
                 redditArticle.getShortenedTitle(20),
                 Tools.getAbsoluteLink(getString(R.string.domain_stub), redditArticle.getPermalink())
-                );
+        );
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(Tools.getShareOnClickListener(ItemDetailActivity.this,

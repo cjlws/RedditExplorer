@@ -12,15 +12,15 @@ class StatsDatabaseClient extends SQLiteOpenHelper {
     private static volatile StatsDatabaseClient instance;
     private final SQLiteDatabase database;
 
-    private StatsDatabaseClient(Context context){
+    private StatsDatabaseClient(Context context) {
         super(context, STAT_DB_NAME, null, STAT_DB_VERSION);
         this.database = getWritableDatabase();
     }
 
-    public static StatsDatabaseClient getInstance(Context context){
-        if(instance == null){
-            synchronized (StatsDatabaseClient.class){
-                if(instance == null){
+    public static StatsDatabaseClient getInstance(Context context) {
+        if (instance == null) {
+            synchronized (StatsDatabaseClient.class) {
+                if (instance == null) {
                     instance = new StatsDatabaseClient(context);
                 }
             }
@@ -29,19 +29,21 @@ class StatsDatabaseClient extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase database){
+    public void onCreate(SQLiteDatabase database) {
         createStatsTable(database);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion){
+    public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
         database.execSQL("DROP TABLE IF EXISTS [" + StatsRecordContract.Stats.NAME + "];");
         onCreate(database);
     }
 
-    public SQLiteDatabase getDatabase(){ return database;}
+    public SQLiteDatabase getDatabase() {
+        return database;
+    }
 
-    private void createStatsTable(SQLiteDatabase database){
+    private void createStatsTable(SQLiteDatabase database) {
         database.execSQL("CREATE TABLE [" + StatsRecordContract.Stats.NAME + "] ([" +
                 StatsRecordContract.Stats.COL_STAT_ID + "] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, [" +
                 StatsRecordContract.Stats.COL_STAT_SUBREDDIT + "] TEXT, [" +

@@ -123,14 +123,15 @@
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
-    <style name="TutorialBody" parent="Base.TextAppearance.AppCompat.Medium">
-    </style>
+    <style name="TutorialBody" parent="Base.TextAppearance.AppCompat.Medium"></style>
 
-    <style name="TabletDetailView"/>
+    <style name="TabletDetailView" />
+
     <style name="TabletDetailView.DetailBlock" parent="TabletDetailView">
         <item name="android:orientation">vertical</item>
         <item name="android:background">@color/tablet_detail_block_background</item>
     </style>
+
     <style name="TabletDetailView.CommentBlock" parent="TabletDetailView">
         <item name="android:background">@color/tablet_list_card_background</item>
     </style>
@@ -146,6 +147,7 @@
         <item name="android:paddingTop">@dimen/comments_block_vertical_spacing</item>
         <item name="android:paddingBottom">@dimen/comments_block_vertical_spacing</item>
     </style>
+
     <style name="CommentBlockTextAuthor" parent="CommentBlockText">
         <item name="android:textStyle">bold</item>
     </style>

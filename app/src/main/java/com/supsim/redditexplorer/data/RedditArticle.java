@@ -49,7 +49,7 @@ public class RedditArticle {
                          String author,
                          String post_thumbnail,
                          String permalink,
-                         String previewOptions){
+                         String previewOptions) {
         this.domain = domain;
         this.subreddit = subreddit;
         this.id = id;
@@ -65,7 +65,7 @@ public class RedditArticle {
 
     }
 
-    public RedditArticle(Cursor cursor){
+    public RedditArticle(Cursor cursor) {
         this.id = cursor.getString(0);
         this.domain = cursor.getString(1);
         this.subreddit = cursor.getString(2);
@@ -80,41 +80,41 @@ public class RedditArticle {
         this.previewOptions = cursor.getString(11);
     }
 
-public Bundle getRedditArticleBundle(){
-    Bundle bundle = new Bundle();
-    bundle.putString(interprocessArticleID, this.id);
-    bundle.putString(interprocessArticleDomain, this.domain);
-    bundle.putString(interprocessArticleSubReddit, this.subreddit);
-    bundle.putString(interprocessArticleTitle, this.title);
-    bundle.putString(interprocessArticleScore, this.score);
-    bundle.putInt(interprocessArticleNumberComments, this.num_comments);
-    bundle.putInt(interprocessArticleCreated, this.created);
-    bundle.putString(interprocessArticleAuthor, this.author);
-    bundle.putString(interprocessArticleThumbnail, this.post_thumbnail);
-    bundle.putString(interprocessArticlePermalink, this.permalink);
-    bundle.putString(interprocessArticlePreviews, this.previewOptions);
+    public Bundle getRedditArticleBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putString(interprocessArticleID, this.id);
+        bundle.putString(interprocessArticleDomain, this.domain);
+        bundle.putString(interprocessArticleSubReddit, this.subreddit);
+        bundle.putString(interprocessArticleTitle, this.title);
+        bundle.putString(interprocessArticleScore, this.score);
+        bundle.putInt(interprocessArticleNumberComments, this.num_comments);
+        bundle.putInt(interprocessArticleCreated, this.created);
+        bundle.putString(interprocessArticleAuthor, this.author);
+        bundle.putString(interprocessArticleThumbnail, this.post_thumbnail);
+        bundle.putString(interprocessArticlePermalink, this.permalink);
+        bundle.putString(interprocessArticlePreviews, this.previewOptions);
 
-    return bundle;
+        return bundle;
 
-}
+    }
 
-public RedditArticle(Bundle bundle){
-    this.id = bundle.getString(interprocessArticleID);
-    this.domain = bundle.getString(interprocessArticleDomain);
-    this.subreddit = bundle.getString(interprocessArticleSubReddit);
-    this.title = bundle.getString(interprocessArticleTitle);
-    this.score = bundle.getString(interprocessArticleScore);
-    this.nsfw = 0;
-    this.num_comments = bundle.getInt(interprocessArticleNumberComments);
-    this.created = bundle.getInt(interprocessArticleCreated);
-    this.author = bundle.getString(interprocessArticleAuthor);
-    this.post_thumbnail = bundle.getString(interprocessArticleThumbnail);
-    this.permalink = bundle.getString(interprocessArticlePermalink);
-    this.previewOptions = bundle.getString(interprocessArticlePreviews);
-}
+    public RedditArticle(Bundle bundle) {
+        this.id = bundle.getString(interprocessArticleID);
+        this.domain = bundle.getString(interprocessArticleDomain);
+        this.subreddit = bundle.getString(interprocessArticleSubReddit);
+        this.title = bundle.getString(interprocessArticleTitle);
+        this.score = bundle.getString(interprocessArticleScore);
+        this.nsfw = 0;
+        this.num_comments = bundle.getInt(interprocessArticleNumberComments);
+        this.created = bundle.getInt(interprocessArticleCreated);
+        this.author = bundle.getString(interprocessArticleAuthor);
+        this.post_thumbnail = bundle.getString(interprocessArticleThumbnail);
+        this.permalink = bundle.getString(interprocessArticlePermalink);
+        this.previewOptions = bundle.getString(interprocessArticlePreviews);
+    }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Domain: ").append(this.domain).append("\n");
         stringBuilder.append("Subreddit: ").append(this.subreddit).append("\n");
@@ -122,7 +122,7 @@ public RedditArticle(Bundle bundle){
         stringBuilder.append("Title: ").append(this.title).append("\n");
         stringBuilder.append("Score: ").append(this.score).append("\n");
         stringBuilder.append("NSFW: ");
-        if(postIsSafeForWork()) {
+        if (postIsSafeForWork()) {
             stringBuilder.append("Safe").append("\n");
         } else {
             stringBuilder.append("Not Safe").append("\n");
@@ -137,7 +137,7 @@ public RedditArticle(Bundle bundle){
         return stringBuilder.toString();
     }
 
-    private boolean postIsSafeForWork(){
+    private boolean postIsSafeForWork() {
         return this.nsfw == 1;
     }
 
@@ -145,11 +145,11 @@ public RedditArticle(Bundle bundle){
         return domain;
     }
 
-    public String getBestPreviewImage(int viewWidth){
+    public String getBestPreviewImage(int viewWidth) {
 
         String bestMatch = "";
 
-        if(!this.previewOptions.isEmpty()) {
+        if (!this.previewOptions.isEmpty()) {
             try {
                 JSONArray jsonArray = new JSONArray(this.previewOptions);
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -166,12 +166,12 @@ public RedditArticle(Bundle bundle){
 
         }
 
-            return bestMatch;
-        }
+        return bestMatch;
+    }
 
-        public String getPreviewOptions(){
-            return this.previewOptions;
-        }
+    public String getPreviewOptions() {
+        return this.previewOptions;
+    }
 
     public String getSubreddit() {
         return subreddit;
@@ -202,8 +202,8 @@ public RedditArticle(Bundle bundle){
         return post_thumbnail;
     }
 
-    public String getSafeThumbnail(){
-        if(this.post_thumbnail.equals("default") || this.post_thumbnail.equals("spoiler") || this.post_thumbnail.equals("self") || this.post_thumbnail.equals("nsfw") || this.post_thumbnail.equals("image")){
+    public String getSafeThumbnail() {
+        if (this.post_thumbnail.equals("default") || this.post_thumbnail.equals("spoiler") || this.post_thumbnail.equals("self") || this.post_thumbnail.equals("nsfw") || this.post_thumbnail.equals("image")) {
             return "";
         }
         return removeXMLStringEncoding(this.post_thumbnail);
@@ -225,9 +225,9 @@ public RedditArticle(Bundle bundle){
         return title;
     }
 
-    public String getShortenedTitle(int maxCharInTitle){
+    public String getShortenedTitle(int maxCharInTitle) {
 
-        if(this.getTitle().length() <= maxCharInTitle){
+        if (this.getTitle().length() <= maxCharInTitle) {
 
             return this.getTitle();
 
@@ -241,7 +241,6 @@ public RedditArticle(Bundle bundle){
     public void setTitle(String title) {
         this.title = title;
     }
-
 
 
 }

@@ -66,14 +66,19 @@
     <string name="share_stats_top_subreddit_no_data">I\'ve just started using Reddit Explorer and it\'s Grrrrreat!!</string>
     <string name="share_stats_top_subreddit">I\'m using Reddit Explorer and I\'ve discovered that my most read sub is %1$s</string>
     <string name="share_stats_top_subreddit_subject">My favourite Subreddit on Reddit Explorer</string>
+    <string name="share_stats_content_description">Share your favourite subreddit</string>
     <string name="share_stats_chooser_title">Share stat via</string>
     <string name="share_article_title">Check out reddit post \"%1$s\" (%2$s) - shared via reddit Explorer</string>
     <string name="share_article_subject">Reddit Explorer - great post found</string>
     <string name="share_article_chooser_title">Share article via</string>
+    <string name="share_article_content_description">Share a link to this article</string>
 
     <string name="domain_stub">https://reddit.com</string>
 
     <string name="formatting_format_domain_with_brackets">(%1$s)</string>
 
+    <string name="article_detail_banner_image_description">Article Preview Image</string>
+    <string name="article_detail_title_text_description">Link to original post</string>
 
+    <string name="article_list_up_next_label">Up next&#8230;</string>
 </resources>

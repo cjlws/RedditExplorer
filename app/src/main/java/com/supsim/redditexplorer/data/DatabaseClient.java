@@ -13,15 +13,15 @@ public class DatabaseClient extends SQLiteOpenHelper {
     private static volatile DatabaseClient instance;
     private final SQLiteDatabase database;
 
-    private DatabaseClient(Context context){
+    private DatabaseClient(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         this.database = getWritableDatabase();
     }
 
-    public static DatabaseClient getInstance(Context context){
-        if(instance == null){
-            synchronized (DatabaseClient.class){
-                if (instance == null){
+    public static DatabaseClient getInstance(Context context) {
+        if (instance == null) {
+            synchronized (DatabaseClient.class) {
+                if (instance == null) {
                     instance = new DatabaseClient(context);
                 }
             }
@@ -30,21 +30,21 @@ public class DatabaseClient extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase database){
+    public void onCreate(SQLiteDatabase database) {
         createArticlesTable(database);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion){
+    public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
         database.execSQL("DROP TABLE IF EXISTS [" + RedditArticleContract.Articles.NAME + "];");
         onCreate(database);
     }
 
-    public SQLiteDatabase getDatabase(){
+    public SQLiteDatabase getDatabase() {
         return database;
     }
 
-    private void createArticlesTable(SQLiteDatabase database){
+    private void createArticlesTable(SQLiteDatabase database) {
         database.execSQL("CREATE TABLE [" + RedditArticleContract.Articles.NAME + "] ([" +
                 RedditArticleContract.Articles.COL_ID + "] TEXT UNIQUE PRIMARY KEY, [" +
                 RedditArticleContract.Articles.COL_DOMAIN + "] TEXT, [" +

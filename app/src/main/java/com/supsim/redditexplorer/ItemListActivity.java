@@ -91,7 +91,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         if (mTwoPane) showPhoneTutorial = false;
 
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.item_list);
-        final TextView emptyMessageTextView = (TextView)findViewById(R.id.emptyReadingListTextMessage);
+        final TextView emptyMessageTextView = (TextView) findViewById(R.id.emptyReadingListTextMessage);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -109,17 +109,18 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
             @Override
             public void onChanged() {
                 super.onChanged();
-                if(mRedditAdapter != null && isAdapterEmpty()){
+                if (mRedditAdapter != null && isAdapterEmpty()) {
 
-                    if(emptyMessageTextView.getVisibility() == View.GONE) emptyMessageTextView.setVisibility(View.VISIBLE);
+                    if (emptyMessageTextView.getVisibility() == View.GONE)
+                        emptyMessageTextView.setVisibility(View.VISIBLE);
                 } else {
-                    if(emptyMessageTextView.getVisibility() == View.VISIBLE) emptyMessageTextView.setVisibility(View.GONE);
+                    if (emptyMessageTextView.getVisibility() == View.VISIBLE)
+                        emptyMessageTextView.setVisibility(View.GONE);
                 }
             }
         };
 
         mRecyclerView.setAdapter(mRedditAdapter);
-
 
 
         // Code to check if the tablet is displaying an article or if it is blank
@@ -161,7 +162,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         }
     }
 
-    private void recordTutorialCompleted(){
+    private void recordTutorialCompleted() {
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.TUTORIAL_COMPLETE, null);
         storeBoolean(PHONE_TUTORIAL_PREF_LABEL, false);
         showPhoneTutorial = false;
@@ -169,28 +170,28 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         getLoaderManager().restartLoader(0, null, this);
     }
 
-    private void storeBoolean(String label, boolean value){
+    private void storeBoolean(String label, boolean value) {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(label, value);
         editor.apply();
     }
 
-    private void recordSwipe(int direction, String id, int position){
+    private void recordSwipe(int direction, String id, int position) {
 
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(ActionedArticleContract.Actioned_Articles.COL_ACTIONED_REDDIT_ID, id);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ActionedArticleContract.Actioned_Articles.COL_ACTIONED_REDDIT_ID, id);
 
 
-            if(direction == ItemTouchHelper.LEFT) {
+        if (direction == ItemTouchHelper.LEFT) {
 
-                Log.d(TAG, "Logging downvote for article with id " + id);
-                contentValues.put(ActionedArticleContract.Actioned_Articles.COL_ACTIONED_TYPE, ActionedArticleContract.Actioned_Articles.ACTIONED_TYPE_DELETED);
+            Log.d(TAG, "Logging downvote for article with id " + id);
+            contentValues.put(ActionedArticleContract.Actioned_Articles.COL_ACTIONED_TYPE, ActionedArticleContract.Actioned_Articles.ACTIONED_TYPE_DELETED);
 
-            } else if (direction == ItemTouchHelper.RIGHT){
+        } else if (direction == ItemTouchHelper.RIGHT) {
 
-                Cursor cursor = mRedditAdapter.getCursor();
-                if(cursor != null){
+            Cursor cursor = mRedditAdapter.getCursor();
+            if (cursor != null) {
                 cursor.moveToPosition(position);
 
                 String subreddit = cursor.getString(COL_SUBREDDIT);
@@ -199,11 +200,11 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
                 recordVisit(subreddit);
                 contentValues.put(ActionedArticleContract.Actioned_Articles.COL_ACTIONED_TYPE, ActionedArticleContract.Actioned_Articles.ACTIONED_TYPE_READ);
             }
-            }
+        }
 
-            getContentResolver().delete(RedditArticleContract.Articles.CONTENT_URI,
+        getContentResolver().delete(RedditArticleContract.Articles.CONTENT_URI,
                 RedditArticleContract.Articles.COL_ID + " = ?", new String[]{id});
-            getContentResolver().insert(ActionedArticleContract.Actioned_Articles.CONTENT_URI, contentValues);
+        getContentResolver().insert(ActionedArticleContract.Actioned_Articles.CONTENT_URI, contentValues);
     }
 
 
@@ -251,15 +252,17 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
-        if(mRedditAdapter != null && adapterDataObserver != null) mRedditAdapter.registerAdapterDataObserver(adapterDataObserver);
+        if (mRedditAdapter != null && adapterDataObserver != null)
+            mRedditAdapter.registerAdapterDataObserver(adapterDataObserver);
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
-        if(mRedditAdapter != null && adapterDataObserver != null) mRedditAdapter.unregisterAdapterDataObserver(adapterDataObserver);
+        if (mRedditAdapter != null && adapterDataObserver != null)
+            mRedditAdapter.unregisterAdapterDataObserver(adapterDataObserver);
     }
 
     @Override
@@ -280,7 +283,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
             Intent openStats = new Intent(this, StatsActivity.class);
             startActivity(openStats);
             return true;
-        } else if (id == R.id.action_refresh_articles){
+        } else if (id == R.id.action_refresh_articles) {
             SyncAdapter.performSync();
         }
         return super.onOptionsItemSelected(item);
@@ -297,7 +300,7 @@ public class ItemListActivity extends AppCompatActivity implements LoaderManager
         );
     }
 
-    private boolean isAdapterEmpty(){
+    private boolean isAdapterEmpty() {
         return mRedditAdapter.getItemCount() == 0;
     }
 

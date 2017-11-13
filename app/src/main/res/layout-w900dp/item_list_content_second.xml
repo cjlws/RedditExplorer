@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".ItemListActivity"
-    android:background="@color/tablet_list_card_background"
-    >
+    android:background="@color/tablet_list_card_background">
+
     <TextView
-        android:text="Up next..."
+        android:text="@string/article_list_up_next_label"
         android:textStyle="italic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"/>
+        android:layout_margin="@dimen/text_margin" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="@dimen/text_margin"
-        >
+        android:layout_margin="@dimen/text_margin">
+
         <TextView
             android:id="@+id/subreddittextview"
             android:layout_width="0dp"
@@ -28,7 +27,8 @@
             android:layout_height="wrap_content"
             android:textAlignment="viewStart"
             tools:text="r/subreddit"
-            style="@style/TabletListText.Subreddit"/>
+            style="@style/TabletListText.Subreddit" />
+
         <TextView
             android:id="@+id/authortextview"
             android:layout_width="0dp"
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:textAlignment="viewEnd"
             tools:text="username"
-            style="@style/TabletListText.Author"/>
+            style="@style/TabletListText.Author" />
     </LinearLayout>
 
     <TextView
@@ -48,8 +48,7 @@
         style="@style/TabletListText"
         android:layout_marginBottom="@dimen/text_margin"
         android:layout_marginStart="@dimen/text_margin"
-        android:layout_marginEnd="@dimen/text_margin"
-        />
+        android:layout_marginEnd="@dimen/text_margin" />
 
 
 </LinearLayout>

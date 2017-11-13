@@ -18,6 +18,7 @@ public class StatsProvider extends ContentProvider {
     private static final int STAT_ID = 2;
 
     private static final UriMatcher uriMatcher;
+
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(StatsRecordContract.CONTENT_AUTHORITY, StatsRecordContract.PATH_STATS, STAT);
@@ -27,14 +28,14 @@ public class StatsProvider extends ContentProvider {
     private SQLiteDatabase database;
 
     @Override
-    public boolean onCreate(){
+    public boolean onCreate() {
         this.database = StatsDatabaseClient.getInstance(getContext()).getDatabase();
         return true;
     }
 
     @Override
-    public String getType(@NonNull Uri uri){
-        switch (uriMatcher.match(uri)){
+    public String getType(@NonNull Uri uri) {
+        switch (uriMatcher.match(uri)) {
             case STAT:
                 return StatsRecordContract.Stats.CONTENT_TYPE;
             case STAT_ID:
@@ -45,10 +46,10 @@ public class StatsProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder){
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 
         Cursor cursor;
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case STAT:
                 cursor = database.query(StatsRecordContract.Stats.NAME,
                         projection,
@@ -63,7 +64,7 @@ public class StatsProvider extends ContentProvider {
                 cursor = database.query(StatsRecordContract.Stats.NAME,
                         projection,
                         StatsRecordContract.Stats.COL_STAT_ID + "=?",
-                        new String[] {String.valueOf(_id)},
+                        new String[]{String.valueOf(_id)},
                         null,
                         null,
                         sortOrder);
@@ -78,12 +79,12 @@ public class StatsProvider extends ContentProvider {
     }
 
     @Override
-    public Uri insert(@NonNull Uri uri, ContentValues values){
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
 
         Uri returnUri;
         long _id;
 
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case STAT:
                 _id = database.insert(StatsRecordContract.Stats.NAME, null, values);
                 returnUri = ContentUris.withAppendedId(StatsRecordContract.Stats.CONTENT_URI, _id);
@@ -100,17 +101,17 @@ public class StatsProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs){
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
 
         int rows;
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case STAT:
                 rows = database.delete(StatsRecordContract.Stats.NAME, selection, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("URI was invalid");
         }
-        if (rows !=0){
+        if (rows != 0) {
             assert getContext() != null;
             TopThreeWidgetProvider.sendRefreshBroadcast(getContext());
         }
@@ -118,23 +119,22 @@ public class StatsProvider extends ContentProvider {
     }
 
     @Override
-    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs){
+    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 
         int rows;
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case STAT:
                 rows = database.update(StatsRecordContract.Stats.NAME, values, selection, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("URI was invalid");
         }
-        if (rows !=0){
+        if (rows != 0) {
             assert getContext() != null;
             TopThreeWidgetProvider.sendRefreshBroadcast(getContext());
         }
         return rows;
     }
-
 
 
 }

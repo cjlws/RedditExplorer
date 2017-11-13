@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.supsim.redditexplorer.Views.StatsTable;
 import com.supsim.redditexplorer.data.Stat;
 import com.supsim.redditexplorer.data.StatsRecordContract;
@@ -19,32 +20,32 @@ public class StatsTableFragment extends Fragment {
     StatsTable statsTable;
     TextView emptyTableTextView;
 
-    public StatsTableFragment(){
+    public StatsTableFragment() {
 
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.stats_table_holder, container, false);
-        statsTable = (StatsTable)rootView.findViewById(R.id.stats_table_row_holder);
-        emptyTableTextView = (TextView)rootView.findViewById(R.id.empty_stats_table_text_view);
+        statsTable = (StatsTable) rootView.findViewById(R.id.stats_table_row_holder);
+        emptyTableTextView = (TextView) rootView.findViewById(R.id.empty_stats_table_text_view);
         fillTable(getAllStats(container));
         return rootView;
     }
 
     private void fillTable(ArrayList<Stat> stats) {
 
-        if(stats.isEmpty()) {
-            if(emptyTableTextView.getVisibility() == View.GONE)
+        if (stats.isEmpty()) {
+            if (emptyTableTextView.getVisibility() == View.GONE)
                 emptyTableTextView.setVisibility(View.VISIBLE);
 
         } else {
-            if(emptyTableTextView.getVisibility() == View.VISIBLE)
+            if (emptyTableTextView.getVisibility() == View.VISIBLE)
                 emptyTableTextView.setVisibility(View.GONE);
 
             statsTable.addHeaderRow(getActivity().getString(R.string.stats_table_header_label_rank),
@@ -68,14 +69,13 @@ public class StatsTableFragment extends Fragment {
 
         ArrayList<Stat> allStats = new ArrayList<>();
 
-        if(container != null) {
+        if (container != null) {
             Cursor cursor = container.getContext().getContentResolver().query(
                     StatsRecordContract.Stats.CONTENT_URI,
                     null,
                     null,
                     null,
                     StatsRecordContract.Stats.COL_STAT_COUNT + " DESC");
-
 
 
             if (cursor != null) {

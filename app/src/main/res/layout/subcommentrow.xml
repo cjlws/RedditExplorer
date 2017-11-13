@@ -12,13 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        tools:text="author"/>
+        tools:text="author" />
+
     <TextView
         android:id="@+id/subcomment_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="comment"
-        android:layout_marginTop="@dimen/comments_block_vertical_spacing"
-        />
+        android:layout_marginTop="@dimen/comments_block_vertical_spacing" />
 
 </LinearLayout>

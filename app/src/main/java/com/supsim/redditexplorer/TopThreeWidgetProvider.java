@@ -18,7 +18,7 @@ public class TopThreeWidgetProvider extends AppWidgetProvider {
     private static final int SUBREDDIT_COLUMN = 0;
     private static final int VIEWS_COLUMN = 1;
 
-    public static void sendRefreshBroadcast(Context context){
+    public static void sendRefreshBroadcast(Context context) {
         Intent intent = new Intent(REFRESH_ACTION);
         intent.setComponent(new ComponentName(context, TopThreeWidgetProvider.class));
         context.sendBroadcast(intent);
@@ -26,10 +26,10 @@ public class TopThreeWidgetProvider extends AppWidgetProvider {
     }
 
     @Override
-    public void onReceive(final Context context, Intent intent){
+    public void onReceive(final Context context, Intent intent) {
         final String action = intent.getAction();
 
-        if(REFRESH_ACTION.equals(action)){
+        if (REFRESH_ACTION.equals(action)) {
 
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             ComponentName thisWidget = new ComponentName(context, TopThreeWidgetProvider.class);
@@ -42,20 +42,20 @@ public class TopThreeWidgetProvider extends AppWidgetProvider {
     }
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds){
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 
         ComponentName thisWidget = new ComponentName(context, TopThreeWidgetProvider.class);
         int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-        for(int widgetId : allWidgetIds){
+        for (int widgetId : allWidgetIds) {
 
             updateWidget(context, widgetId, appWidgetManager);
 
         }
     }
 
-    private void updateWidget(Context context, int widgetId, AppWidgetManager appWidgetManager){
+    private void updateWidget(Context context, int widgetId, AppWidgetManager appWidgetManager) {
 
         String[] projection = new String[]{StatsRecordContract.Stats.COL_STAT_SUBREDDIT, StatsRecordContract.Stats.COL_STAT_COUNT};
         String limit = StatsRecordContract.Stats.COL_STAT_COUNT + " DESC LIMIT 3";  // Only return the top three stats
@@ -65,22 +65,22 @@ public class TopThreeWidgetProvider extends AppWidgetProvider {
         Intent intent;
         RemoteViews remoteViews;
 
-        if(cursor != null && cursor.getCount() == 3){
+        if (cursor != null && cursor.getCount() == 3) {
             Log.d("WIDGET", "There are enough results to draw the widget proper");
 
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_top_three_layout);
 
-            if(cursor.moveToFirst()){
+            if (cursor.moveToFirst()) {
                 remoteViews.setTextViewText(R.id.widgetFirstPlace, cursor.getString(SUBREDDIT_COLUMN));
                 remoteViews.setTextViewText(R.id.widgetFirstPlaceViews, cursor.getString(VIEWS_COLUMN));
             }
 
-            if(cursor.moveToNext()){
+            if (cursor.moveToNext()) {
                 remoteViews.setTextViewText(R.id.widgetSecondPlace, cursor.getString(SUBREDDIT_COLUMN));
                 remoteViews.setTextViewText(R.id.widgetSecondPlaceViews, cursor.getString(VIEWS_COLUMN));
             }
 
-            if(cursor.moveToNext()){
+            if (cursor.moveToNext()) {
                 remoteViews.setTextViewText(R.id.widgetThirdPlace, cursor.getString(SUBREDDIT_COLUMN));
                 remoteViews.setTextViewText(R.id.widgetThirdPlaceViews, cursor.getString(VIEWS_COLUMN));
             }
@@ -99,7 +99,7 @@ public class TopThreeWidgetProvider extends AppWidgetProvider {
         remoteViews.setOnClickPendingIntent(R.id.widgetLayout, pendingIntent);
         appWidgetManager.updateAppWidget(widgetId, remoteViews);
 
-        if(cursor != null && !cursor.isClosed()) cursor.close();
+        if (cursor != null && !cursor.isClosed()) cursor.close();
     }
 
 }

@@ -17,7 +17,7 @@ public class MySingleton {
     private Context mCtx;
     private ImageLoader imageLoader;
 
-    private MySingleton(Context context){
+    private MySingleton(Context context) {
         mCtx = context;
         mRequestQueue = getRequestQueue();
 
@@ -41,25 +41,25 @@ public class MySingleton {
 
     }
 
-    public static synchronized MySingleton getInstance(Context context){
-        if (mInstance == null){
+    public static synchronized MySingleton getInstance(Context context) {
+        if (mInstance == null) {
             mInstance = new MySingleton(context);
         }
         return mInstance;
     }
 
-    public RequestQueue getRequestQueue(){
-        if (mRequestQueue == null){
+    public RequestQueue getRequestQueue() {
+        if (mRequestQueue == null) {
             mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
         }
         return mRequestQueue;
     }
 
-    public <T> void addToRequestQueue(Request<T> req){
+    public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
     }
 
-    public ImageLoader getImageLoader(){
+    public ImageLoader getImageLoader() {
         return imageLoader;
     }
 }

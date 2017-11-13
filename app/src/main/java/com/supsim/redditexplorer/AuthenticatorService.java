@@ -9,7 +9,7 @@ public class AuthenticatorService extends Service {
     private Authenticator mAuthenticator;
 
     @Override
-    public void onCreate(){
+    public void onCreate() {
         mAuthenticator = new Authenticator(this);
     }
 

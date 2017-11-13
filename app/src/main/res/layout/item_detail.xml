@@ -6,8 +6,7 @@
     android:paddingTop="16dp"
     tools:context="com.supsim.redditexplorer.ItemDetailFragment"
 
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
         android:id="@+id/postSubredditTextView"
@@ -20,6 +19,7 @@
         android:paddingEnd="16dp"
         android:paddingStart="16dp"
         tools:layout_editor_absoluteX="0dp" />
+
     <TextView
         android:id="@+id/postScoreTextView"
         android:layout_width="wrap_content"
@@ -31,6 +31,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         tools:layout_editor_absoluteX="318dp" />
+
     <TextView
         android:id="@+id/temp_textview"
         android:layout_width="0dp"
@@ -44,7 +45,9 @@
         android:layout_marginTop="16dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        tools:layout_editor_absoluteX="0dp" />
+        tools:layout_editor_absoluteX="0dp"
+        android:contentDescription="@string/article_detail_title_text_description" />
+
     <TextView
         android:id="@+id/postAuthorAndTimeStampTextView"
         android:layout_width="0dp"
@@ -62,7 +65,7 @@
     <View
         android:id="@+id/detailCommentsDivider"
         app:layout_constraintTop_toBottomOf="@id/postAuthorAndTimeStampTextView"
-        style="@style/Divider"/>
+        style="@style/Divider" />
 
     <TextView
         android:id="@+id/selfTextHolder"
@@ -76,7 +79,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingTop="16dp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <com.supsim.redditexplorer.Views.ListViewWithoutScroll
         android:background="#fff"
@@ -88,6 +91,5 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteX="0dp"
-        android:listSelector="@android:color/transparent">
-    </com.supsim.redditexplorer.Views.ListViewWithoutScroll>
+        android:listSelector="@android:color/transparent"></com.supsim.redditexplorer.Views.ListViewWithoutScroll>
 </android.support.constraint.ConstraintLayout>

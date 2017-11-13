@@ -86,14 +86,14 @@ public class ItemDetailFragment extends Fragment {
 
         super.onCreate(savedInstanceState);
 
-        if(getArguments().containsKey(interprocessArticleID)){
+        if (getArguments().containsKey(interprocessArticleID)) {
             Log.d(TAG, "Incoming intent has an ID of " + getArguments().getString(interprocessArticleID));
         }
 
         redditArticle = new RedditArticle(getArguments());
         Log.d(TAG, "Recreated Reddit Article with an ID of " + redditArticle.getId());
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             Log.d(TAG, "On Create Saved ID was " + savedInstanceState.getString(savedInstanceKeyID));
         } else {
             Log.d(TAG, "On Create Saved Instance State was null");
@@ -105,7 +105,7 @@ public class ItemDetailFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState){
+    public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putInt(savedInstanceKeyIsSelf, savedInstanceContentIsSelf);
         savedInstanceState.putString(savedInstanceKeySelfTextHtml, savedInstanceContentSelfTextHtml);
@@ -132,7 +132,7 @@ public class ItemDetailFragment extends Fragment {
         ArrayList<TopLevelComment> topLevelComments = new ArrayList<>();
         commentArrayAdapter = new CommentArrayAdapter(getContext(), topLevelComments);
 
-        if(!phoneView) {
+        if (!phoneView) {
 
             ListView commentHolderLayout = (ListView) rootView.findViewById(R.id.comment_holder_listView);
             commentHolderLayout.setAdapter(commentArrayAdapter);
@@ -140,7 +140,7 @@ public class ItemDetailFragment extends Fragment {
         } else {
 
             ListViewWithoutScroll commentHolderLayout =
-                    (ListViewWithoutScroll)rootView.findViewById(R.id.comment_holder_listView);
+                    (ListViewWithoutScroll) rootView.findViewById(R.id.comment_holder_listView);
             commentHolderLayout.setFocusable(false);
             commentHolderLayout.setClickable(false);
             commentHolderLayout.setAdapter(commentArrayAdapter);
@@ -155,8 +155,8 @@ public class ItemDetailFragment extends Fragment {
         // Truncate long titles so they better fit the screen
         if (redditArticle.getTitle() != null) {
 
-                updatePlaceholderText(getString(R.string.placeholder_loading_comments_with_title,
-                        redditArticle.getShortenedTitle(20)));
+            updatePlaceholderText(getString(R.string.placeholder_loading_comments_with_title,
+                    redditArticle.getShortenedTitle(20)));
 
         } else {
 
@@ -167,27 +167,27 @@ public class ItemDetailFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState){
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         boolean previousSelf = false;
         boolean previousComments = false;
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
 
             // Check for previously gathered self status
-            if (savedInstanceState.containsKey(savedInstanceKeyIsSelf)){
+            if (savedInstanceState.containsKey(savedInstanceKeyIsSelf)) {
                 int isSelf = savedInstanceState.getInt(savedInstanceKeyIsSelf, ARTICLE_IS_SELF_TBD);
-                switch(isSelf){
+                switch (isSelf) {
                     case ARTICLE_IS_SELF_FALSE:
                         savedInstanceContentIsSelf = ARTICLE_IS_SELF_FALSE;
                         previousSelf = true;
                         break;
                     case ARTICLE_IS_SELF_TRUE:
 
-                        if(savedInstanceState.containsKey(savedInstanceKeySelfTextHtml)){
+                        if (savedInstanceState.containsKey(savedInstanceKeySelfTextHtml)) {
                             String previousSelfContent = savedInstanceState.getString(savedInstanceKeySelfTextHtml);
-                            if(previousSelfContent != null && !previousSelfContent.isEmpty()){
+                            if (previousSelfContent != null && !previousSelfContent.isEmpty()) {
                                 savedInstanceContentSelfTextHtml = previousSelfContent;
                                 savedInstanceContentIsSelf = ARTICLE_IS_SELF_TRUE;
                                 previousSelf = true;
@@ -206,26 +206,26 @@ public class ItemDetailFragment extends Fragment {
             }
 
             // Check for previously gathered comments JSON
-            if(savedInstanceState.containsKey(savedInstanceKeyCommentsJSON)){
+            if (savedInstanceState.containsKey(savedInstanceKeyCommentsJSON)) {
                 String commentsJSON = savedInstanceState.getString(savedInstanceKeyCommentsJSON, "");
-                if(commentsJSON != null && !commentsJSON.isEmpty()){
+                if (commentsJSON != null && !commentsJSON.isEmpty()) {
                     savedInstanceContentCommentsJSON = commentsJSON;
                     previousComments = true;
                 }
             }
         }
 
-        if(previousComments && previousSelf){
+        if (previousComments && previousSelf) {
 
 
-            if(!savedInstanceContentSelfTextHtml.isEmpty()) {
+            if (!savedInstanceContentSelfTextHtml.isEmpty()) {
                 addHTMLToSelfText(savedInstanceContentSelfTextHtml);
             }
-            try{
+            try {
                 JSONObject jsonObject = new JSONObject(savedInstanceContentCommentsJSON);
                 populateComments(jsonObject);
 
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 getComments(redditArticle.getPermalink());
             }
@@ -236,13 +236,13 @@ public class ItemDetailFragment extends Fragment {
         drawDetailsSection();
     }
 
-    private void updatePlaceholderText(String text){
+    private void updatePlaceholderText(String text) {
 
         bodyText.setText(Tools.removeXMLStringEncoding(text));
-        if(bodyText.hasOnClickListeners()) bodyText.setOnClickListener(null);
+        if (bodyText.hasOnClickListeners()) bodyText.setOnClickListener(null);
     }
 
-    private void updatePhoneTitleText(String text, final String link){
+    private void updatePhoneTitleText(String text, final String link) {
         bodyText.setText(Tools.removeXMLStringEncoding(text));
         bodyText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -253,15 +253,15 @@ public class ItemDetailFragment extends Fragment {
         bodyText.setTextAppearance(getActivity(), R.style.PhoneTitleLink);
     }
 
-    private void updateErrorText(String text){
+    private void updateErrorText(String text) {
 
         bodyText.setText(text);
-        if(bodyText.hasOnClickListeners()) bodyText.setOnClickListener(null);
+        if (bodyText.hasOnClickListeners()) bodyText.setOnClickListener(null);
     }
 
     private void getComments(String link) {
 
-        if(link != null && !link.isEmpty()) {
+        if (link != null && !link.isEmpty()) {
             String destinationUrl = getFullLink(link);
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(destinationUrl, new Response.Listener<JSONArray>() {
                 @Override
@@ -283,7 +283,7 @@ public class ItemDetailFragment extends Fragment {
 
     private void updatePage(JSONArray response) {
 
-        if(response != null) {
+        if (response != null) {
             parseJson(response);
         } else {
             updateErrorText(getString(R.string.error_no_detail_page_response));
@@ -312,27 +312,27 @@ public class ItemDetailFragment extends Fragment {
         }
     }
 
-    private void checkForSelf(JSONObject jsonObject){
+    private void checkForSelf(JSONObject jsonObject) {
 
         // This method checks for the presence of a 'self' field in the JSON
         // This field is only present when the post contains a body of text in addition to the title
         // Usually for things like jokes and short stories
         // If it is present then a second textview on the details page need to be populated
 
-        if(jsonObject != null){
+        if (jsonObject != null) {
 
             try {
 
                 JSONArray children = jsonObject.getJSONObject("data").getJSONArray("children");
 
-                for(int i = 0; i < children.length(); i++){
+                for (int i = 0; i < children.length(); i++) {
 
-                    if (children.get(i) instanceof JSONObject){
+                    if (children.get(i) instanceof JSONObject) {
 
                         JSONObject data = ((JSONObject) children.get(i)).getJSONObject("data");
                         String selftext = data.optString("selftext_html", "");
 
-                        if(!selftext.isEmpty() && !data.isNull("selftext_html")){
+                        if (!selftext.isEmpty() && !data.isNull("selftext_html")) {
 
                             savedInstanceContentIsSelf = ARTICLE_IS_SELF_TRUE;
 
@@ -345,7 +345,7 @@ public class ItemDetailFragment extends Fragment {
                     }
                 }
 
-            } catch (JSONException e){
+            } catch (JSONException e) {
 
                 savedInstanceContentIsSelf = ARTICLE_IS_SELF_TBD;
                 e.printStackTrace();
@@ -355,12 +355,12 @@ public class ItemDetailFragment extends Fragment {
     }
 
     @SuppressWarnings("deprecation")
-    private void addHTMLToSelfText(String selfHtml){
+    private void addHTMLToSelfText(String selfHtml) {
 
         // This method takes the html version of the self text, removes extra encoding and
         // pushes it to the textview.  Any hyperlinks are rendered as clickable
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
             selfText.setText(Html.fromHtml((Tools.removeXMLStringEncoding(selfHtml)), Html.FROM_HTML_MODE_COMPACT));
 
@@ -369,15 +369,15 @@ public class ItemDetailFragment extends Fragment {
             selfText.setText(Html.fromHtml(Tools.removeXMLStringEncoding(selfHtml)));
 
         }
-            selfText.setMovementMethod(LinkMovementMethod.getInstance());
-            selfText.setVisibility(View.VISIBLE);
+        selfText.setMovementMethod(LinkMovementMethod.getInstance());
+        selfText.setVisibility(View.VISIBLE);
 
         // Cache the finalised self text for the savedInstance
         savedInstanceContentSelfTextHtml = selfHtml;
 
     }
 
-    private void drawDetailsSection(){
+    private void drawDetailsSection() {
 
         // Complete the details relating to the post
 
@@ -391,9 +391,9 @@ public class ItemDetailFragment extends Fragment {
 
         // If on a phone then the toolbar title is changed to reflect the subreddit
         // If on a tablet then the detail block is amended with both sub and domain
-        if(phoneView){
+        if (phoneView) {
 
-            if(subredditTextView != null) {
+            if (subredditTextView != null) {
                 subredditTextView.setText(redditArticle.getDomain());
             }
         } else {
@@ -401,7 +401,7 @@ public class ItemDetailFragment extends Fragment {
             if (subredditTextView != null) {
                 subredditTextView.setText(getString(R.string.tablet_view_sub_and_domain,
                         Tools.addRToSubreddit(redditArticle.getSubreddit()),
-                                redditArticle.getDomain()));
+                        redditArticle.getDomain()));
             }
         }
 
@@ -410,7 +410,8 @@ public class ItemDetailFragment extends Fragment {
             authorAndTimeTextView.setText(Tools.formatAuthorAndTime(getActivity(),
                     redditArticle.getAuthor(), redditArticle.getCreated()));
 
-        if (scoreTextView != null) scoreTextView.setText(Tools.formatScore(redditArticle.getScore()));
+        if (scoreTextView != null)
+            scoreTextView.setText(Tools.formatScore(redditArticle.getScore()));
 
         // Update main page link with article title and functioning hyperlink
         if (mainLinkTextView != null) {
@@ -437,14 +438,14 @@ public class ItemDetailFragment extends Fragment {
         }
 
 
-        if(phoneView){
+        if (phoneView) {
             updatePhoneTitleText(redditArticle.getTitle(), redditArticle.getPermalink());
         }
 
         // Only triggered for phone view.  Updates the toolbar if a decent enough image is available
         // That is one that has a width at least as large as the view it is going in to
 
-        if(previewImageView != null){
+        if (previewImageView != null) {
 
             DisplayMetrics metrics = new DisplayMetrics();
             getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -455,7 +456,7 @@ public class ItemDetailFragment extends Fragment {
 
     }
 
-    private void populateComments(JSONObject commentsJSON){
+    private void populateComments(JSONObject commentsJSON) {
 
 
         drawCommentsSection(parseCommentsJSON(commentsJSON));
@@ -463,7 +464,7 @@ public class ItemDetailFragment extends Fragment {
         try {
             savedInstanceContentCommentsJSON = commentsJSON.toString();
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -474,7 +475,7 @@ public class ItemDetailFragment extends Fragment {
         commentArrayAdapter.clear();
         commentArrayAdapter.addAll(topLevelComments);
 
-        if(!phoneView) {
+        if (!phoneView) {
             updatePlaceholderText(getString(R.string.tablet_view_showing_number_of_comments,
                     topLevelComments.size()));
         }
@@ -550,7 +551,7 @@ public class ItemDetailFragment extends Fragment {
                                 }
 
 
-                                if(secondLevelComments.size() > 0) {
+                                if (secondLevelComments.size() > 0) {
 
                                     allcomments.add(new TopLevelComment(
                                             sdfdsf.optString("author", getString(R.string.comment_author_error_placeholder)),
@@ -605,7 +606,7 @@ public class ItemDetailFragment extends Fragment {
         return getAbsoluteLink(link) + ".json";
     }
 
-    private String getAbsoluteLink(String link){
+    private String getAbsoluteLink(String link) {
         return Tools.getAbsoluteLink(getString(R.string.domain_stub), link);
     }
 
@@ -626,7 +627,7 @@ public class ItemDetailFragment extends Fragment {
             testingCommentTicker++;
             TopLevelComment topLevelComment = getItem(position);
 
-            if(topLevelComment != null) {
+            if (topLevelComment != null) {
 
                 if (topLevelComment.getType() == 2) {
                     // This is the case for comments that have subcomments
@@ -727,7 +728,7 @@ public class ItemDetailFragment extends Fragment {
                 TextView authorTextView = (TextView) convertView.findViewById(R.id.subcomment_author);
                 TextView bodyTextView = (TextView) convertView.findViewById(R.id.subcomment_body);
 
-                if(secondLevelComment != null) {
+                if (secondLevelComment != null) {
                     if (authorTextView != null)
                         authorTextView.setText(secondLevelComment.getAuthor());
                     if (bodyTextView != null) bodyTextView.setText(secondLevelComment.getComment());

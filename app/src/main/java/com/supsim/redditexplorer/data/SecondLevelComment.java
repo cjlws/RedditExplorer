@@ -9,21 +9,21 @@ public class SecondLevelComment {
     private String author;
     private String comment;
 
-    public SecondLevelComment(String author, String comment){
+    public SecondLevelComment(String author, String comment) {
         this.author = author;
         this.comment = comment;
     }
 
-    public String getAuthor(){
+    public String getAuthor() {
         return this.author;
     }
 
-    public String getComment(){
+    public String getComment() {
         return this.comment;
     }
 
-    private String shortAndCleanComment(){
-        if (this.comment.length() <= maxLengthComment){
+    private String shortAndCleanComment() {
+        if (this.comment.length() <= maxLengthComment) {
             return Tools.removeXMLStringEncoding(this.comment.replace("\n", ". "));
         } else {
             return Tools.removeXMLStringEncoding(this.comment.substring(0, maxLengthComment).replace("\n", ". "));
@@ -31,7 +31,7 @@ public class SecondLevelComment {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return this.author + ":  " + shortAndCleanComment();
     }
 }

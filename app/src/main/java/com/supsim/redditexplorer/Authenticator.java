@@ -10,12 +10,12 @@ import android.os.Bundle;
 
 class Authenticator extends AbstractAccountAuthenticator {
 
-    Authenticator(Context context){
+    Authenticator(Context context) {
         super(context);
     }
 
     @Override
-    public Bundle editProperties(AccountAuthenticatorResponse response, String string){
+    public Bundle editProperties(AccountAuthenticatorResponse response, String string) {
         throw new UnsupportedOperationException();
     }
 
@@ -38,7 +38,7 @@ class Authenticator extends AbstractAccountAuthenticator {
     }
 
     @Override
-    public String getAuthTokenLabel(String string){
+    public String getAuthTokenLabel(String string) {
         throw new UnsupportedOperationException();
     }
 

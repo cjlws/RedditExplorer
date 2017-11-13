@@ -29,17 +29,17 @@ public class StatsChartFragment extends Fragment {
     // to improve readability
     private static final int maxNumberSegments = 6;
 
-    public StatsChartFragment(){
+    public StatsChartFragment() {
 
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
 
         return inflater.inflate(R.layout.stats_chart_holder, container, false);
     }
@@ -48,28 +48,28 @@ public class StatsChartFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        PieChart chart = (PieChart)view.findViewById(R.id.main_pie_chart);
+        PieChart chart = (PieChart) view.findViewById(R.id.main_pie_chart);
 
         ArrayList<Stat> allStats = getAllStats();
         List<PieEntry> entries = new ArrayList<>();
 
         int segment = 0;
         int otherViews = 0;
-        for(Stat stat : allStats){
-            if(segment < maxNumberSegments) {
+        for (Stat stat : allStats) {
+            if (segment < maxNumberSegments) {
                 entries.add(stat.getPieEntry());
             } else {
                 otherViews += stat.getNumberOfViews();
             }
             segment++;
         }
-        if(otherViews > 0) entries.add((new Stat(
-                maxNumberSegments+1,
+        if (otherViews > 0) entries.add((new Stat(
+                maxNumberSegments + 1,
                 getString(R.string.stats_chart_label_for_other),
                 otherViews)).getPieEntry());
 
 
-        if(!entries.isEmpty()){
+        if (!entries.isEmpty()) {
 
             PieDataSet set = new PieDataSet(entries, getString(R.string.stats_chart_label_for_data));
             set.setColors(ColorTemplate.VORDIPLOM_COLORS);
@@ -93,7 +93,7 @@ public class StatsChartFragment extends Fragment {
             legend.setEnabled(false);
 
             chart.setEntryLabelColor(ContextCompat.getColor(getContext(),
-                    R.color.cardview_dark_background)); 
+                    R.color.cardview_dark_background));
             chart.setEntryLabelTextSize(10f);
 
 

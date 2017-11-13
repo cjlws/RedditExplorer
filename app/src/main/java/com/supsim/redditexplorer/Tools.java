@@ -16,7 +16,7 @@ import java.util.Locale;
 public class Tools {
 
 
-    static String getAbsoluteLink(String domainStub, String link){
+    static String getAbsoluteLink(String domainStub, String link) {
         return domainStub + removeXMLStringEncoding(link);
     }
 
@@ -31,11 +31,11 @@ public class Tools {
         return newUri;
     }
 
-    static Intent createBrowserIntent(String link){
+    static Intent createBrowserIntent(String link) {
         return new Intent(Intent.ACTION_VIEW).setData(Uri.parse(removeXMLStringEncoding(link)));
     }
 
-    private static Intent createShareIntent(String shareTitle, String shareBody){
+    private static Intent createShareIntent(String shareTitle, String shareBody) {
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareTitle);
@@ -44,9 +44,9 @@ public class Tools {
     }
 
     static View.OnClickListener getShareOnClickListener(final Context context,
-                                                               final String shareTitle,
-                                                               final String shareBody,
-                                                               final String chooserTitle){
+                                                        final String shareTitle,
+                                                        final String shareBody,
+                                                        final String chooserTitle) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -75,12 +75,12 @@ public class Tools {
     }
 
 
-    public static String removeXMLStringEncoding(String string){
+    public static String removeXMLStringEncoding(String string) {
 
         return string.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">");
     }
 
-    public static String addRToSubreddit(String subreddit){
+    public static String addRToSubreddit(String subreddit) {
 
         return "r\u2215" + removeXMLStringEncoding(subreddit);
     }

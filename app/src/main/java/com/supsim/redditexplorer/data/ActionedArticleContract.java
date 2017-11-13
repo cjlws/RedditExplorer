@@ -9,7 +9,7 @@ public class ActionedArticleContract {
     static final String PATH_ACTIONED_ARTICLES = "actionedArticles";
 
     static final String ACTIONED_ARTICLES_DB_NAME = "actioned_db";
-    static final int ACTIONED_ARTICLES_DB_VERSION =3;
+    static final int ACTIONED_ARTICLES_DB_VERSION = 3;
 
     public static abstract class Actioned_Articles {
         static final String NAME = "actionedArticles";

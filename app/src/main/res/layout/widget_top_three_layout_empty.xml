@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:id="@+id/widgetLayout"
+<LinearLayout android:id="@+id/widgetLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/appwidget_dark_bg_clickable"
-    >
+    android:background="@drawable/appwidget_dark_bg_clickable">
 
     <TextView
         android:layout_width="match_parent"
@@ -14,5 +12,5 @@
         android:layout_gravity="center"
         android:gravity="center_horizontal|center_vertical"
         android:text="@string/widget_not_enough_views_for_stats"
-        style="@style/TopThreeWidget.RowText"/>
+        style="@style/TopThreeWidget.RowText" />
 </LinearLayout>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -11,13 +10,11 @@
     android:layout_marginStart="16dp"
     android:layout_marginEnd="16dp"
     android:layout_marginTop="16dp"
-    android:layout_marginBottom="32dp"
-    >
+    android:layout_marginBottom="32dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/subreddittextview"
@@ -31,8 +28,7 @@
             android:paddingStart="16dp"
             android:paddingEnd="3dp"
             android:paddingTop="16dp"
-            android:paddingBottom="16dp"/>
-
+            android:paddingBottom="16dp" />
 
 
         <com.android.volley.toolbox.NetworkImageView
@@ -45,7 +41,7 @@
             tools:layout_editor_absoluteX="16dp"
             tools:layout_height="50dp"
             tools:layout_width="match_parent"
-            tools:background="#eee"/>
+            tools:background="#eee" />
 
         <TextView
             android:id="@+id/item_list_top_domain"
@@ -58,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="105dp"
-            android:alpha=".7"/>
+            android:alpha=".7" />
 
         <LinearLayout
             android:id="@+id/titleAndThumbHolder"
@@ -72,8 +68,7 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            >
+            android:layout_marginBottom="16dp">
 
             <TextView
                 android:id="@+id/titletextview"
@@ -87,8 +82,7 @@
                 android:textStyle="bold"
                 android:paddingEnd="8dp"
                 android:paddingStart="0dp"
-                android:layout_gravity="center_vertical"
-                />
+                android:layout_gravity="center_vertical" />
 
             <com.android.volley.toolbox.NetworkImageView
                 android:id="@+id/thumbnailHolder"
@@ -100,13 +94,10 @@
                 app:layout_constraintTop_toBottomOf="@+id/previewImageHolder"
                 android:maxWidth="75dp"
                 android:scaleType="fitStart"
-                android:layout_gravity="center_vertical"
-                />
-
+                android:layout_gravity="center_vertical" />
 
 
         </LinearLayout>
-
 
 
         <TextView
@@ -120,8 +111,7 @@
             android:paddingEnd="16dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            tools:layout_editor_absoluteX="16dp"
-            />
+            tools:layout_editor_absoluteX="16dp" />
 
         <TextView
             tools:text="32 comments"
@@ -137,7 +127,6 @@
             tools:layout_editor_absoluteX="250dp" />
 
 
-
         <TextView
             tools:text="14.4K"
             android:id="@+id/list_content_top_score"
@@ -151,7 +140,7 @@
             tools:layout_editor_absoluteX="160dp"
             android:textStyle="bold"
             android:textSize="24sp"
-            android:alpha=".7"/>
+            android:alpha=".7" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
